@@ -4,6 +4,18 @@ Images is a first-party resource plugin for Velor CMS. It owns image uploads,
 image categories, generated formats, the CMS image picker endpoint, image
 ordering, image format regeneration, and the image resource views.
 
+## Contents
+
+- [Installation](#installation)
+- [Package Contents](#package-contents)
+- [Configuration](#configuration)
+- [Rich Text Image Picker](#rich-text-image-picker)
+- [Routes](#routes)
+- [Publishing](#publishing)
+- [Testing](#testing)
+- [Uninstalling](#uninstalling)
+- [License](#license)
+
 ## Installation
 
 Install the package in a Velor CMS application:
