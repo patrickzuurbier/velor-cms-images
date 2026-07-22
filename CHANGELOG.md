@@ -14,4 +14,9 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
   resources, policies, translations, sidebar registration, CMS routes, image
   services, and regeneration command.
 
+### Changed
+
+- Removed the unused legacy image category config; image categories are managed
+  as database records.
+
 [Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.0.0...HEAD

@@ -24,12 +24,6 @@ return [
 
     'max_size' => 10240,
 
-    'categories' => [
-        'news',
-        'paragraph',
-        'slide',
-    ],
-
     'mimes' => [
         'jpg',
         'jpeg',
