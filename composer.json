@@ -1,0 +1,31 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "patrickzuurbier/velor-cms-images",
+    "description": "Images resource plugin for Velor CMS.",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.2",
+        "velor/cms": "^1.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Velor\\Images\\": "src/",
+            "Velor\\Images\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Velor\\Images\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Velor\\Images\\Providers\\ImagesServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
