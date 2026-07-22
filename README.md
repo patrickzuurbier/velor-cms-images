@@ -93,6 +93,28 @@ config/velor-images.php
 It defines allowed mime types, maximum upload size, generated formats, picker
 formats, and the default picker format.
 
+## Rich Text Image Picker
+
+Installing this package adds the CMS image picker endpoint:
+
+```text
+images.picker
+```
+
+Velor CMS core detects that route while building `RichText` form inputs. When
+the route is available, the rich text editor replaces Quill's default image
+button with the Velor CMS image picker, so users can insert managed images and
+choose generated formats.
+
+Without this package, `RichText` keeps Quill's original URL-based image
+insertion. Users can still paste an image URL manually. With this package
+installed, users can also copy generated image format URLs from the image
+resource and paste them into Quill's original image URL prompt in contexts
+where the Velor picker is not used.
+
+Per-field picker control may be added to the core `RichText` field later. For
+now, picker activation is automatic and based on the `images.picker` route.
+
 ## Routes
 
 CMS routes live in `routes/cms.php`. The service provider loads that file
