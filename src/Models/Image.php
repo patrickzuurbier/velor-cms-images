@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace Velor\Images\Models;
 
 use App\Concerns\Models\UsesAudit;
+use App\Contracts\Models\TranslatableInterface;
 use App\Models\AbstractModel;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Kyslik\ColumnSortable\Sortable;
+use Spatie\Translatable\HasTranslations;
+use Spatie\Translatable\Translatable;
 use Velor\Images\Database\Factories\ImageFactory;
 
 /**
@@ -24,13 +27,21 @@ use Velor\Images\Database\Factories\ImageFactory;
  *
  * @mixin \Eloquent
  */
-class Image extends AbstractModel
+class Image extends AbstractModel implements TranslatableInterface
 {
     /** @use HasFactory<ImageFactory> */
     use HasFactory;
     use HasUuids;
+    use HasTranslations;
     use Sortable;
     use UsesAudit;
+
+    /**
+     * @var array<int, string>
+     */
+    public array $translatable = [
+        'description',
+    ];
 
     /**
      * @var array<int, string>
@@ -114,6 +125,7 @@ class Image extends AbstractModel
     /**
      * @return array{
      *     meta_data: 'array',
+     *     description: Translatable::class,
      *     sort_order: 'int',
      *     created_at: 'datetime',
      *     updated_at: 'datetime',
@@ -122,10 +134,11 @@ class Image extends AbstractModel
     protected function casts(): array
     {
         return [
-            'meta_data'  => 'array',
-            'sort_order' => 'int',
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
+            'meta_data'   => 'array',
+            'description' => Translatable::class,
+            'sort_order'  => 'int',
+            'created_at'  => 'datetime',
+            'updated_at'  => 'datetime',
         ];
     }
 

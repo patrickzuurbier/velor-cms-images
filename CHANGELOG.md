@@ -6,6 +6,11 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+### Added
+
+- Added translatable image descriptions for localized rich text image alt
+  defaults.
+
 ## [1.0.0] - 2026-07-22
 
 ### Added

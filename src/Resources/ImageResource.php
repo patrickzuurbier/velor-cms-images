@@ -98,6 +98,7 @@ class ImageResource extends AbstractResource
             Textarea::make('description')
                 ->label(__('velor-images::resources.images.fields.description'))
                 ->help(__('velor-images::resources.images.help.description'))
+                ->translatable()
                 ->hideFromIndex()
                 ->hideOnCreate()
                 ->rules([
