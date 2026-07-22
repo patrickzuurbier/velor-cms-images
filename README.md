@@ -24,6 +24,31 @@ The package service provider is auto-discovered by Laravel. When enabled, it
 registers resources, policies, sidebar items, CMS routes, translations,
 migrations, views, services, and the image regeneration command.
 
+Publish the package migrations when the application should own them:
+
+```bash
+php artisan vendor:publish --tag=velor-images-migrations
+```
+
+Then run the database migrations:
+
+```bash
+php artisan migrate
+```
+
+For local development, use the Makefile from the Velor CMS host application:
+
+```bash
+make migrate
+```
+
+Optionally publish and run the image category seeder for local data:
+
+```bash
+php artisan vendor:publish --tag=velor-images-seeders
+php artisan db:seed --class=Velor\Images\Database\Seeders\ImageCategoriesTableSeeder
+```
+
 ## Package Contents
 
 ```text
