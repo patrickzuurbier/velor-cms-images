@@ -6,6 +6,14 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+### Changed
+
+- Moved image preview, format preview, and row reordering behavior onto Velor
+  CMS resource extension hooks so core no longer needs image-specific runtime
+  references.
+- Clarified package installation documentation for VCS installs, local path
+  development, migrations, and seeders.
+
 ## [1.1.0] - 2026-07-22
 
 ### Added

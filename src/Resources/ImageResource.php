@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Velor\Images\Resources;
 
 use App\Resources\AbstractResource;
+use App\Data\View\IndexRowReorderingData;
 use App\Resources\Fields\Field;
 use App\Resources\Fields\ImageFormats;
 use App\Resources\Fields\ImageMetaData;
@@ -17,10 +18,14 @@ use App\Resources\Fields\Textarea;
 use App\Resources\Tabs\ResourceTab;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Routing\UrlGenerator;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Velor\Images\Models\Image;
 use Velor\Images\Models\ImageCategory;
+use Velor\Images\Services\Contracts\ImageDisplayFormatResolverInterface;
+use Velor\Images\Services\Contracts\ImageFormatDataFactoryInterface;
+use Velor\Images\Services\Contracts\ImageUrlGeneratorInterface;
 
 class ImageResource extends AbstractResource
 {
@@ -29,6 +34,9 @@ class ImageResource extends AbstractResource
     public function __construct(
         protected Repository $config,
         protected UrlGenerator $urlGenerator,
+        protected ImageUrlGeneratorInterface $imageUrlGenerator,
+        protected ImageDisplayFormatResolverInterface $imageDisplayFormatResolver,
+        protected ImageFormatDataFactoryInterface $imageFormatDataFactory,
     ) {
     }
 
@@ -45,12 +53,14 @@ class ImageResource extends AbstractResource
         return [
             ImagePreview::make('name')
                 ->label(__('velor-images::resources.images.fields.image'))
+                ->resolveValueUsing(fn (Model $model, Field $_field, string $action): ?string => $this->imageUrl($model, $action))
                 ->hideOnCreate(),
             ImageMetaData::make('original_meta_data')
                 ->label(__('velor-images::resources.images.fields.original_metadata'))
                 ->onlyOnShow(),
             ImageFormats::make('image_formats')
                 ->label(__('velor-images::resources.images.fields.formats'))
+                ->resolveValueUsing(fn (Model $model, Field $_field, string $_action): array => $this->imageFormats($model))
                 ->onlyOnShow(),
             ImageUpload::make('image')
                 ->label(__('velor-images::resources.images.fields.image'))
@@ -151,6 +161,22 @@ class ImageResource extends AbstractResource
             : [];
     }
 
+    public function indexRowReordering(Request $request): ?IndexRowReorderingData
+    {
+        $category = $request->query('image_category');
+
+        if ($category === null || $request->query('search') !== null || $request->query('sort') !== null) {
+            return null;
+        }
+
+        return new IndexRowReorderingData(
+            url: $this->urlGenerator->route('images.reorder'),
+            itemsKey: 'images',
+            contextKey: 'image_category',
+            contextValue: is_string($category) ? $category : null,
+        );
+    }
+
     /**
      * @return array<int, string>
      */
@@ -191,5 +217,30 @@ class ImageResource extends AbstractResource
             ->orderBy('name')
             ->get()
             ->all();
+    }
+
+    protected function imageUrl(Model $model, string $action): ?string
+    {
+        if (! $model instanceof Image) {
+            return null;
+        }
+
+        $format = $action === 'index'
+            ? $this->imageDisplayFormatResolver->index($model)
+            : $this->imageDisplayFormatResolver->cms($model);
+
+        return $this->imageUrlGenerator->format($model, $format);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function imageFormats(Model $model): array
+    {
+        if (! $model instanceof Image) {
+            return [];
+        }
+
+        return $this->imageFormatDataFactory->make($model);
     }
 }
