@@ -6,6 +6,8 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-07-22
+
 ### Added
 
 - Initial local package extraction for the Image and Image Category resource
@@ -20,3 +22,4 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
   as database records.
 
 [Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.0.0...HEAD
+[1.0.0]: https://github.com/patrickzuurbier/velor-cms-images/releases/tag/1.0.0
