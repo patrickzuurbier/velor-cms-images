@@ -6,6 +6,8 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+## [1.1.2] - 2026-07-23
+
 ### Changed
 
 - Documented that installing the package enables the Velor CMS image picker for
@@ -47,7 +49,8 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 - Removed the unused legacy image category config; image categories are managed
   as database records.
 
-[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.1.1...HEAD
+[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.1.2...HEAD
+[1.1.2]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.1.1...1.1.2
 [1.1.1]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.1.0...1.1.1
 [1.1.0]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.0.0...1.1.0
 [1.0.0]: https://github.com/patrickzuurbier/velor-cms-images/releases/tag/1.0.0
