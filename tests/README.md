@@ -1,8 +1,10 @@
 # Velor CMS Images Tests
 
-Package integration is currently covered by the Velor CMS host test suite.
+These tests belong to the Images package and should travel with the package
+repository. The Velor CMS core test suite must not depend on this package being
+installed.
 
-When this package moves to its own repository, package tests should cover:
+Package tests should cover:
 
 - Service provider boot.
 - Resource, policy, sidebar, and route registration.
