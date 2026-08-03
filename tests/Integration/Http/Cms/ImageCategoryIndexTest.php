@@ -98,9 +98,10 @@ class ImageCategoryIndexTest extends AbstractDatabaseIntegrationTestCase
             'sort_order'        => 2,
         ]);
 
-        $response = $this->postJson(route('images.reorder'), [
-            'image_category' => (string) $category->id,
-            'images'         => [
+        $response = $this->postJson(route('resource-row-order.update', ['resource' => 'images']), [
+            'context_key'   => 'image_category_id',
+            'context_value' => (string) $category->id,
+            'images'        => [
                 (string) $second->id,
                 (string) $first->id,
             ],

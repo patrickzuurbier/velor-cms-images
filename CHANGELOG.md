@@ -6,6 +6,15 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-08-03
+
+### Changed
+
+- Replaced the package-specific image row ordering endpoint with Velor CMS core
+  row ordering.
+- Raised the Velor CMS core requirement to `^1.6`.
+- Documented local package development outside the Velor CMS core repository.
+
 ## [1.1.2] - 2026-07-23
 
 ### Changed
@@ -49,7 +58,8 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 - Removed the unused legacy image category config; image categories are managed
   as database records.
 
-[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.1.2...HEAD
+[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.2.0...HEAD
+[1.2.0]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.1.2...1.2.0
 [1.1.2]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.1.1...1.1.2
 [1.1.1]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.1.0...1.1.1
 [1.1.0]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.0.0...1.1.0

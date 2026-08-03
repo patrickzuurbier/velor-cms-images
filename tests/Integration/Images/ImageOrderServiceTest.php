@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Velor\Images\Tests\Integration\Images;
 
+use App\Services\Resources\Contracts\ResourceRowOrderServiceInterface;
+use Tests\Concerns\UsesAuthorization;
+use Tests\Integration\AbstractDatabaseIntegrationTestCase;
 use Velor\Images\Models\Image;
 use Velor\Images\Models\ImageCategory;
 use Velor\Images\Services\Contracts\ImageOrderServiceInterface;
-use Tests\Concerns\UsesAuthorization;
-use Tests\Integration\AbstractDatabaseIntegrationTestCase;
 
 class ImageOrderServiceTest extends AbstractDatabaseIntegrationTestCase
 {
@@ -110,12 +111,18 @@ class ImageOrderServiceTest extends AbstractDatabaseIntegrationTestCase
             'sort_order'        => 30,
         ]);
 
-        $service = $this->app->make(ImageOrderServiceInterface::class);
-        $service->reorderVisible((string) $category->id, [
-            (string) $third->id,
-            (string) $first->id,
-            (string) $second->id,
-        ]);
+        $service = $this->app->make(ResourceRowOrderServiceInterface::class);
+        $service->reorder(
+            modelClass: Image::class,
+            orderColumn: 'sort_order',
+            ids: [
+                (string) $third->id,
+                (string) $first->id,
+                (string) $second->id,
+            ],
+            scopeColumn: 'image_category_id',
+            scopeValue: (string) $category->id,
+        );
 
         $this->assertSame(20, $first->refresh()->sort_order);
         $this->assertSame(30, $second->refresh()->sort_order);

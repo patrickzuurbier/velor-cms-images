@@ -11,6 +11,5 @@ use Velor\Images\Http\Controllers\ImagePickerController;
  * @var Router $router
  */
 $router->get('/images/picker', ImagePickerController::class)->name('images.picker');
-$router->post('/images/reorder', [ImageController::class, 'reorder'])->name('images.reorder');
 $router->resources(['images' => ImageController::class]);
 $router->resources(['image-categories' => ImageCategoryController::class]);

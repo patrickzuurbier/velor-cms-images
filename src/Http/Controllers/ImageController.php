@@ -17,10 +17,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
 
 class ImageController extends Controller
 {
@@ -113,26 +110,6 @@ class ImageController extends Controller
             ->with('status', 'Image updated.');
     }
 
-    public function reorder(Request $request): Response
-    {
-        $this->authorize('reorder', Image::class);
-
-        $input = $request->validate([
-            'image_category' => ['nullable', 'string'],
-            'images'         => ['required', 'array'],
-            'images.*'       => ['required', 'string', Rule::exists('images', 'id')],
-        ]);
-
-        $categoryId = $this->categoryIdForReorder($input['image_category'] ?? null);
-
-        $this->imageOrderService->reorderVisible(
-            categoryId: $categoryId,
-            imageIds: array_values(array_filter($input['images'], 'is_string')),
-        );
-
-        return new Response('', Response::HTTP_NO_CONTENT);
-    }
-
     public function destroy(Image $image): RedirectResponse
     {
         $this->imageUploadService->delete($image);
@@ -164,20 +141,5 @@ class ImageController extends Controller
         }
 
         $query->where('image_category_id', $category);
-    }
-
-    protected function categoryIdForReorder(mixed $category): ?string
-    {
-        if ($category === 'common' || $category === null || $category === '') {
-            return null;
-        }
-
-        if (! is_string($category) || ! ImageCategory::query()->whereKey($category)->exists()) {
-            throw ValidationException::withMessages([
-                'image_category' => 'The selected image category is invalid.',
-            ]);
-        }
-
-        return $category;
     }
 }

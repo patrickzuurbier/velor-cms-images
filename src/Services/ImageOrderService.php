@@ -53,42 +53,6 @@ class ImageOrderService implements ImageOrderServiceInterface
     }
 
     /**
-     * @param array<int, string> $imageIds
-     */
-    public function reorderVisible(?string $categoryId, array $imageIds): void
-    {
-        $imageIds = array_values(array_unique($imageIds));
-
-        if ($imageIds === []) {
-            return;
-        }
-
-        $this->database->transaction(function () use ($categoryId, $imageIds): void {
-            $images = Image::query()
-                ->where('image_category_id', $categoryId)
-                ->whereKey($imageIds)
-                ->orderBy('sort_order')
-                ->get();
-
-            $slots = $images->pluck('sort_order')->all();
-            $validIds = $images->pluck('id')->map(static fn (mixed $id): string => (string) $id)->all();
-            $orderedIds = array_values(array_intersect($imageIds, $validIds));
-
-            foreach ($orderedIds as $index => $id) {
-                Image::query()
-                    ->whereKey($id)
-                    ->update(['sort_order' => self::TEMPORARY_ORDER_OFFSET + $index + 1]);
-            }
-
-            foreach ($orderedIds as $index => $id) {
-                Image::query()
-                    ->whereKey($id)
-                    ->update(['sort_order' => $slots[$index]]);
-            }
-        });
-    }
-
-    /**
      * @return array<int, string>
      */
     protected function orderedIds(?string $categoryId, ?string $except = null): array

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Velor\Images\Models;
 
 use App\Concerns\Models\UsesAudit;
+use App\Concerns\Models\HasRowOrdering;
+use App\Contracts\Models\RowOrderableInterface;
 use App\Contracts\Models\TranslatableInterface;
 use App\Models\AbstractModel;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -16,6 +18,7 @@ use Spatie\Translatable\Translatable;
 use Velor\Images\Database\Factories\ImageFactory;
 
 /**
+ * @property string $id
  * @property string $filename
  * @property string $name
  * @property string|null $image_category_id
@@ -27,11 +30,12 @@ use Velor\Images\Database\Factories\ImageFactory;
  *
  * @mixin \Eloquent
  */
-class Image extends AbstractModel implements TranslatableInterface
+class Image extends AbstractModel implements RowOrderableInterface, TranslatableInterface
 {
     /** @use HasFactory<ImageFactory> */
     use HasFactory;
     use HasUuids;
+    use HasRowOrdering;
     use HasTranslations;
     use Sortable;
     use UsesAudit;
@@ -64,6 +68,13 @@ class Image extends AbstractModel implements TranslatableInterface
         'sort_order',
         'description',
         'meta_data',
+    ];
+
+    /**
+     * @var array<int, string>
+     */
+    protected array $rowOrderScopeColumns = [
+        'image_category_id',
     ];
 
     protected $fillable = [

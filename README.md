@@ -22,20 +22,22 @@ Install the package in a Velor CMS application:
 
 ```bash
 composer config repositories.velor-cms-images vcs https://github.com/patrickzuurbier/velor-cms-images.git
-composer require patrickzuurbier/velor-cms-images:^1.1
+composer require patrickzuurbier/velor-cms-images:^1.2
 ```
 
-For local path development inside the Velor CMS repository, temporarily point
-Composer to the package workspace and update the package from the app
-container:
+This package requires Velor CMS `^1.6`.
+
+For local path development, keep the package repository outside the Velor CMS
+core repository. Temporarily point Composer to the package workspace and update
+the package from the app container:
 
 ```bash
-composer config repositories.velor-cms-images path packages/velor/images
+composer config repositories.velor-cms-images path ../velor-cms-images
 docker compose exec app composer update patrickzuurbier/velor-cms-images --with-dependencies
 ```
 
 With a local path repository, Composer can symlink
-`vendor/patrickzuurbier/velor-cms-images` to `packages/velor/images`. Remove the
+`vendor/patrickzuurbier/velor-cms-images` to `../velor-cms-images`. Remove the
 local path repository again before testing a real install from GitHub:
 
 ```bash

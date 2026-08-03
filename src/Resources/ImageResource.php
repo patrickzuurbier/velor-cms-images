@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Velor\Images\Resources;
 
 use App\Resources\AbstractResource;
-use App\Data\View\IndexRowReorderingData;
+use App\Data\View\ResourceRowOrderingData;
 use App\Resources\Fields\Field;
 use App\Resources\Fields\ImageFormats;
 use App\Resources\Fields\ImageMetaData;
@@ -161,7 +161,7 @@ class ImageResource extends AbstractResource
             : [];
     }
 
-    public function indexRowReordering(Request $request): ?IndexRowReorderingData
+    public function rowOrdering(Request $request): ?ResourceRowOrderingData
     {
         $category = $request->query('image_category');
 
@@ -169,10 +169,10 @@ class ImageResource extends AbstractResource
             return null;
         }
 
-        return new IndexRowReorderingData(
-            url: $this->urlGenerator->route('images.reorder'),
+        return new ResourceRowOrderingData(
+            url: $this->urlGenerator->route('resource-row-order.update', ['resource' => (new Image())->getTable()]),
             itemsKey: 'images',
-            contextKey: 'image_category',
+            contextKey: 'image_category_id',
             contextValue: is_string($category) ? $category : null,
         );
     }

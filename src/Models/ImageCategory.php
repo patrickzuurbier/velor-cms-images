@@ -13,6 +13,7 @@ use Kyslik\ColumnSortable\Sortable;
 use Velor\Images\Database\Factories\ImageCategoryFactory;
 
 /**
+ * @property string $id
  * @property string $name
  *
  * @mixin \Eloquent
