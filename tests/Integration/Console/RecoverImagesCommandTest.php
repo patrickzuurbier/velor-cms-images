@@ -1,0 +1,100 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Velor\Images\Tests\Integration\Console;
+
+use Illuminate\Console\Command;
+use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Testing\PendingCommand;
+use Tests\Integration\AbstractDatabaseIntegrationTestCase;
+use Velor\Images\Models\Image;
+
+class RecoverImagesCommandTest extends AbstractDatabaseIntegrationTestCase
+{
+    public function test_it_recovers_missing_image_rows_from_s3(): void
+    {
+        Storage::fake('s3');
+        $imageId = (string) Str::uuid();
+        $original = UploadedFile::fake()->image('lost.jpg', 640, 480);
+        $thumbnail = UploadedFile::fake()->image('thumbnail.webp', 320, 240);
+        $disk = $this->s3Disk();
+        $disk->putFileAs("images/{$imageId}", $original, 'original.jpg');
+        $disk->putFileAs("images/{$imageId}", $thumbnail, 'thumbnail.webp');
+
+        $command = $this->artisan('velor:images:recover');
+
+        $this->assertInstanceOf(PendingCommand::class, $command);
+        $command
+            ->expectsOutput('Recovered 1 images from S3.')
+            ->assertExitCode(Command::SUCCESS)
+            ->run();
+
+        $this->assertDatabaseHas('images', [
+            'id'                => $imageId,
+            'filename'          => 'original.jpg',
+            'name'              => 'Recovered image '.Str::substr($imageId, 0, 8),
+            'image_category_id' => null,
+            'sort_order'        => 1,
+            'description'       => null,
+        ]);
+
+        $image = Image::query()->findOrFail($imageId);
+        $this->assertSame(640, $image->metaData()['original']['width']);
+        $this->assertSame(480, $image->metaData()['original']['height']);
+        $this->assertSame('image/jpeg', $image->metaData()['original']['mime_type']);
+        $this->assertSame(320, $image->metaData()['formats']['thumbnail']['width']);
+
+        $secondCommand = $this->artisan('velor:images:recover');
+
+        $this->assertInstanceOf(PendingCommand::class, $secondCommand);
+        $secondCommand
+            ->expectsOutput('Recovered 0 images from S3.')
+            ->assertExitCode(Command::SUCCESS)
+            ->run();
+    }
+
+    public function test_dry_run_does_not_insert_rows(): void
+    {
+        Storage::fake('s3');
+        $imageId = (string) Str::uuid();
+        $original = UploadedFile::fake()->image('lost.png', 200, 100);
+        $this->s3Disk()->putFileAs("images/{$imageId}", $original, 'original.png');
+
+        $command = $this->artisan('velor:images:recover', ['--dry-run' => true]);
+
+        $this->assertInstanceOf(PendingCommand::class, $command);
+        $command
+            ->expectsOutput('Found 1 images that can be recovered. No database rows were inserted.')
+            ->assertExitCode(Command::SUCCESS)
+            ->run();
+
+        $this->assertDatabaseMissing('images', ['id' => $imageId]);
+    }
+
+    public function test_it_skips_unreadable_originals(): void
+    {
+        Storage::fake('s3');
+        $imageId = (string) Str::uuid();
+        $this->s3Disk()->put("images/{$imageId}/original.jpg", 'not an image');
+
+        $command = $this->artisan('velor:images:recover');
+
+        $this->assertInstanceOf(PendingCommand::class, $command);
+        $command
+            ->expectsOutput("Skipped images/{$imageId}/original.jpg: Object is not a readable image.")
+            ->expectsOutput('Recovered 0 images from S3.')
+            ->assertExitCode(Command::SUCCESS)
+            ->run();
+
+        $this->assertDatabaseMissing('images', ['id' => $imageId]);
+    }
+
+    protected function s3Disk(): Filesystem
+    {
+        return Storage::disk('s3');
+    }
+}

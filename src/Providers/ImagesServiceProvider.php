@@ -11,6 +11,7 @@ use App\Services\CmsRouting\Contracts\CmsRouteRegistrarInterface;
 use App\Services\Resources\Contracts\ResourceRegistryInterface;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Support\ServiceProvider;
+use Velor\Images\Console\Commands\RecoverImagesCommand;
 use Velor\Images\Console\Commands\RegenerateImagesCommand;
 use Velor\Images\Models\Image;
 use Velor\Images\Models\ImageCategory;
@@ -24,6 +25,7 @@ use Velor\Images\Services\Contracts\ImageFormatGeneratorInterface;
 use Velor\Images\Services\Contracts\ImageOrderServiceInterface;
 use Velor\Images\Services\Contracts\ImagePathGeneratorInterface;
 use Velor\Images\Services\Contracts\ImagePickerDataFactoryInterface;
+use Velor\Images\Services\Contracts\ImageRecoveryServiceInterface;
 use Velor\Images\Services\Contracts\ImageRegenerationServiceInterface;
 use Velor\Images\Services\Contracts\ImageUploadServiceInterface;
 use Velor\Images\Services\Contracts\ImageUrlGeneratorInterface;
@@ -33,6 +35,7 @@ use Velor\Images\Services\ImageFormatGenerator;
 use Velor\Images\Services\ImageOrderService;
 use Velor\Images\Services\ImagePathGenerator;
 use Velor\Images\Services\ImagePickerDataFactory;
+use Velor\Images\Services\ImageRecoveryService;
 use Velor\Images\Services\ImageRegenerationService;
 use Velor\Images\Services\ImageUploadService;
 use Velor\Images\Services\ImageUrlGenerator;
@@ -41,7 +44,7 @@ class ImagesServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/../../config/velor-images.php', 'velor-images');
+        $this->mergeConfigFrom(__DIR__.'/../../config/velor-images.php', 'velor-images');
 
         $this->app->singleton(
             ImagePathGeneratorInterface::class,
@@ -84,6 +87,11 @@ class ImagesServiceProvider extends ServiceProvider
         );
 
         $this->app->singleton(
+            ImageRecoveryServiceInterface::class,
+            ImageRecoveryService::class,
+        );
+
+        $this->app->singleton(
             ImagePickerDataFactoryInterface::class,
             ImagePickerDataFactory::class,
         );
@@ -96,12 +104,13 @@ class ImagesServiceProvider extends ServiceProvider
         SidebarItemRegistryInterface $sidebarItems,
         ConfigRepository $config,
     ): void {
-        $this->loadTranslationsFrom(__DIR__ . '/../../lang', 'velor-images');
-        $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
-        $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'velor-images');
+        $this->loadTranslationsFrom(__DIR__.'/../../lang', 'velor-images');
+        $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
+        $this->loadViewsFrom(__DIR__.'/../../resources/views', 'velor-images');
 
         if ($this->app->runningInConsole()) {
             $this->commands([
+                RecoverImagesCommand::class,
                 RegenerateImagesCommand::class,
             ]);
         }
@@ -110,8 +119,8 @@ class ImagesServiceProvider extends ServiceProvider
             $resources->register($this->configuredClass($config, 'velor-images.resources.image_category', ImageCategoryResource::class));
             $resources->register($this->configuredClass($config, 'velor-images.resources.image', ImageResource::class));
 
-            $policies->register(ImageCategory::class, $this->configuredClass($config, 'velor-images.policies.' . ImageCategory::class, ImageCategoryPolicy::class));
-            $policies->register(Image::class, $this->configuredClass($config, 'velor-images.policies.' . Image::class, ImagePolicy::class));
+            $policies->register(ImageCategory::class, $this->configuredClass($config, 'velor-images.policies.'.ImageCategory::class, ImageCategoryPolicy::class));
+            $policies->register(Image::class, $this->configuredClass($config, 'velor-images.policies.'.Image::class, ImagePolicy::class));
 
             $sidebarItems->registerBefore(
                 'navigations.index',
@@ -122,33 +131,32 @@ class ImagesServiceProvider extends ServiceProvider
                 new SidebarItemData(ImageCategory::class, 'image-categories.index', 'velor-images::resources.image-categories.plural', 'bi-tags'),
             );
 
-            $cmsRoutes->loadAuthenticated(__DIR__ . '/../../routes/cms.php');
+            $cmsRoutes->loadAuthenticated(__DIR__.'/../../routes/cms.php');
         }
 
         $this->publishes([
-            __DIR__ . '/../../config/velor-images.php' => $this->app->configPath('velor-images.php'),
+            __DIR__.'/../../config/velor-images.php' => $this->app->configPath('velor-images.php'),
         ], 'velor-images-config');
 
         $this->publishes([
-            __DIR__ . '/../../database/migrations' => $this->app->databasePath('migrations'),
+            __DIR__.'/../../database/migrations' => $this->app->databasePath('migrations'),
         ], 'velor-images-migrations');
 
         $this->publishes([
-            __DIR__ . '/../../database/seeders' => $this->app->databasePath('seeders'),
+            __DIR__.'/../../database/seeders' => $this->app->databasePath('seeders'),
         ], 'velor-images-seeders');
 
         $this->publishes([
-            __DIR__ . '/../../lang' => $this->app->langPath('vendor/velor-images'),
+            __DIR__.'/../../lang' => $this->app->langPath('vendor/velor-images'),
         ], 'velor-images-lang');
 
         $this->publishes([
-            __DIR__ . '/../../resources/views' => $this->app->resourcePath('views/vendor/velor-images'),
+            __DIR__.'/../../resources/views' => $this->app->resourcePath('views/vendor/velor-images'),
         ], 'velor-images-views');
     }
 
     /**
-     * @param class-string $default
-     *
+     * @param  class-string  $default
      * @return class-string
      */
     protected function configuredClass(ConfigRepository $config, string $key, string $default): string

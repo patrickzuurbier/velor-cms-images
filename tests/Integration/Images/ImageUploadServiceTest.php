@@ -4,28 +4,27 @@ declare(strict_types=1);
 
 namespace Velor\Images\Tests\Integration\Images;
 
+use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Tests\Integration\AbstractDatabaseIntegrationTestCase;
 use Velor\Images\Models\ImageCategory;
 use Velor\Images\Services\Contracts\ImageFormatGeneratorInterface;
 use Velor\Images\Services\Contracts\ImagePathGeneratorInterface;
 use Velor\Images\Services\Contracts\ImageUploadServiceInterface;
-use Illuminate\Http\UploadedFile;
-use Tests\Concerns\UsesStorage;
-use Tests\Integration\AbstractDatabaseIntegrationTestCase;
 
 class ImageUploadServiceTest extends AbstractDatabaseIntegrationTestCase
 {
-    use UsesStorage;
-
     protected function tearDown(): void
     {
-        $this->filesystem()->disk('s3')->deleteDirectory('images');
+        $this->s3Disk()->deleteDirectory('images');
 
         parent::tearDown();
     }
 
     public function test_it_stores_original_and_configured_formats_for_uploaded_image(): void
     {
-        $this->fakeS3Disk();
+        Storage::fake('s3');
         $category = ImageCategory::factory()->create(['name' => 'News']);
 
         $image = $this->imageUploadService()->upload(
@@ -33,7 +32,7 @@ class ImageUploadServiceTest extends AbstractDatabaseIntegrationTestCase
             (string) $category->getKey(),
         );
 
-        $disk = $this->filesystem()->disk('s3');
+        $disk = $this->s3Disk();
         $metaData = $image->metaData();
 
         $this->assertSame('hero-image.jpg', $image->getAttribute('filename'));
@@ -57,7 +56,7 @@ class ImageUploadServiceTest extends AbstractDatabaseIntegrationTestCase
 
     public function test_it_deletes_image_directory_and_model(): void
     {
-        $this->fakeS3Disk();
+        Storage::fake('s3');
 
         $image = $this->imageUploadService()->upload(
             UploadedFile::fake()->image('delete-me.jpg', 640, 480),
@@ -67,19 +66,19 @@ class ImageUploadServiceTest extends AbstractDatabaseIntegrationTestCase
 
         $this->imageUploadService()->delete($image);
 
-        $this->assertFalse($this->filesystem()->disk('s3')->exists($directory));
+        $this->assertFalse($this->s3Disk()->exists($directory));
         $this->assertDatabaseMissing('images', ['id' => $image->id]);
     }
 
     public function test_it_removes_stale_formats_when_regenerating_image_formats(): void
     {
-        $this->fakeS3Disk();
+        Storage::fake('s3');
 
         $image = $this->imageUploadService()->upload(
             UploadedFile::fake()->image('regenerate-me.jpg', 1200, 800),
         );
 
-        $disk = $this->filesystem()->disk('s3');
+        $disk = $this->s3Disk();
 
         $this->assertTrue($disk->exists($this->pathGenerator()->format($image, 'half')));
 
@@ -119,5 +118,10 @@ class ImageUploadServiceTest extends AbstractDatabaseIntegrationTestCase
     protected function pathGenerator(): ImagePathGeneratorInterface
     {
         return $this->app->make(ImagePathGeneratorInterface::class);
+    }
+
+    protected function s3Disk(): Filesystem
+    {
+        return Storage::disk('s3');
     }
 }

@@ -9,6 +9,7 @@ ordering, image format regeneration, and the image resource views.
 - [Installation](#installation)
 - [Package Contents](#package-contents)
 - [Configuration](#configuration)
+- [Image Commands](#image-commands)
 - [Rich Text Image Picker](#rich-text-image-picker)
 - [Routes](#routes)
 - [Publishing](#publishing)
@@ -85,6 +86,7 @@ src/Http/Controllers
 src/Http/Requests
 src/Policies
 src/Services
+src/Console/Commands/RecoverImagesCommand.php
 src/Console/Commands/RegenerateImagesCommand.php
 database/migrations
 database/seeders
@@ -106,6 +108,40 @@ config/velor-images.php
 
 It defines allowed mime types, maximum upload size, generated formats, picker
 formats, and the default picker format.
+
+## Image Commands
+
+Regenerate all configured formats from the stored originals:
+
+```bash
+php artisan velor:images:regenerate
+```
+
+Recover missing image database rows from originals that still exist in S3:
+
+```bash
+php artisan velor:images:recover
+```
+
+Use a dry run to inspect recoverable images without inserting records:
+
+```bash
+php artisan velor:images:recover --dry-run
+```
+
+Recovery is useful after a database refresh when the S3 `media` bucket still
+contains uploaded files. It recreates one image row per
+`images/{image-id}/original.*` object and restores available metadata from the
+stored files. The original upload filename cannot be recovered from S3, so the
+recovered filename is the stored original object name.
+
+If image formats are missing or the configured formats changed, run recovery
+first and then regenerate formats:
+
+```bash
+php artisan velor:images:recover
+php artisan velor:images:regenerate
+```
 
 ## Rich Text Image Picker
 

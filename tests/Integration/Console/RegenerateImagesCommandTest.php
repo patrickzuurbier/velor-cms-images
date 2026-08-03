@@ -4,34 +4,33 @@ declare(strict_types=1);
 
 namespace Velor\Images\Tests\Integration\Console;
 
+use Illuminate\Console\Command;
+use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Testing\PendingCommand;
+use Tests\Integration\AbstractDatabaseIntegrationTestCase;
 use Velor\Images\Services\Contracts\ImagePathGeneratorInterface;
 use Velor\Images\Services\Contracts\ImageUploadServiceInterface;
-use Illuminate\Console\Command;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Testing\PendingCommand;
-use Tests\Concerns\UsesStorage;
-use Tests\Integration\AbstractDatabaseIntegrationTestCase;
 
 class RegenerateImagesCommandTest extends AbstractDatabaseIntegrationTestCase
 {
-    use UsesStorage;
-
     protected function tearDown(): void
     {
-        $this->filesystem()->disk('s3')->deleteDirectory('images');
+        $this->s3Disk()->deleteDirectory('images');
 
         parent::tearDown();
     }
 
     public function test_it_regenerates_images_from_the_console_command(): void
     {
-        $this->fakeS3Disk();
+        Storage::fake('s3');
 
         $image = $this->imageUploadService()->upload(
             UploadedFile::fake()->image('console-regenerate.jpg', 1200, 800),
         );
 
-        $disk = $this->filesystem()->disk('s3');
+        $disk = $this->s3Disk();
 
         $this->assertTrue($disk->exists($this->pathGenerator()->format($image, 'half')));
 
@@ -71,5 +70,10 @@ class RegenerateImagesCommandTest extends AbstractDatabaseIntegrationTestCase
     protected function pathGenerator(): ImagePathGeneratorInterface
     {
         return $this->app->make(ImagePathGeneratorInterface::class);
+    }
+
+    protected function s3Disk(): Filesystem
+    {
+        return Storage::disk('s3');
     }
 }

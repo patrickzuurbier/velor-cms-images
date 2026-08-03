@@ -6,6 +6,11 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+### Added
+
+- Added `velor:images:recover` to recover missing image database rows from
+  originals that still exist in S3 storage.
+
 ## [1.2.0] - 2026-08-03
 
 ### Changed
