@@ -75,6 +75,30 @@ class RecoverImagesCommandTest extends AbstractDatabaseIntegrationTestCase
         $this->assertDatabaseMissing('images', ['id' => $imageId]);
     }
 
+    public function test_it_skips_existing_image_rows(): void
+    {
+        Storage::fake('s3');
+        $image = Image::factory()->create([
+            'filename'   => 'existing.jpg',
+            'name'       => 'Existing image',
+            'sort_order' => 7,
+        ]);
+        $original = UploadedFile::fake()->image('existing.jpg', 640, 480);
+        $this->s3Disk()->putFileAs("images/{$image->id}", $original, 'original.jpg');
+
+        $command = $this->artisan('velor:images:recover');
+
+        $this->assertInstanceOf(PendingCommand::class, $command);
+        $command
+            ->expectsOutput('Recovered 0 images from S3.')
+            ->assertExitCode(Command::SUCCESS)
+            ->run();
+
+        $this->assertSame(1, Image::query()->whereKey($image->id)->count());
+        $this->assertSame('Existing image', $image->refresh()->name);
+        $this->assertSame(7, $image->sort_order);
+    }
+
     public function test_it_skips_unreadable_originals(): void
     {
         Storage::fake('s3');

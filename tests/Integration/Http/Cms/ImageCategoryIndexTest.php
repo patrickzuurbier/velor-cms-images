@@ -99,9 +99,33 @@ class ImageCategoryIndexTest extends AbstractDatabaseIntegrationTestCase
         ]);
 
         $response = $this->postJson(route('resource-row-order.update', ['resource' => 'images']), [
-            'context_key'   => 'image_category_id',
-            'context_value' => (string) $category->id,
-            'images'        => [
+            'images' => [
+                (string) $second->id,
+                (string) $first->id,
+            ],
+        ]);
+
+        $response->assertNoContent();
+        $this->assertSame(2, $first->refresh()->sort_order);
+        $this->assertSame(1, $second->refresh()->sort_order);
+    }
+
+    public function test_common_image_rows_can_be_reordered_without_context(): void
+    {
+        $this->actingAsAdmin();
+        $first = Image::factory()->create([
+            'name'              => 'First image',
+            'image_category_id' => null,
+            'sort_order'        => 1,
+        ]);
+        $second = Image::factory()->create([
+            'name'              => 'Second image',
+            'image_category_id' => null,
+            'sort_order'        => 2,
+        ]);
+
+        $response = $this->postJson(route('resource-row-order.update', ['resource' => 'images']), [
+            'images' => [
                 (string) $second->id,
                 (string) $first->id,
             ],

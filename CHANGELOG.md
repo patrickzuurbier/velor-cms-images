@@ -6,10 +6,16 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-08-04
+
 ### Added
 
 - Added `velor:images:recover` to recover missing image database rows from
   originals that still exist in S3 storage.
+
+### Fixed
+
+- Fixed drag row ordering for uncategorized images on the Common tab.
 
 ## [1.2.0] - 2026-08-03
 
@@ -63,7 +69,8 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 - Removed the unused legacy image category config; image categories are managed
   as database records.
 
-[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.2.0...HEAD
+[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.2.1...HEAD
+[1.2.1]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.2.0...1.2.1
 [1.2.0]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.1.2...1.2.0
 [1.1.2]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.1.1...1.1.2
 [1.1.1]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.1.0...1.1.1

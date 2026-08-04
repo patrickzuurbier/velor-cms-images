@@ -172,8 +172,6 @@ class ImageResource extends AbstractResource
         return new ResourceRowOrderingData(
             url: $this->urlGenerator->route('resource-row-order.update', ['resource' => (new Image())->getTable()]),
             itemsKey: 'images',
-            contextKey: 'image_category_id',
-            contextValue: is_string($category) ? $category : null,
         );
     }
 

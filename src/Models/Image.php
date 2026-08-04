@@ -70,13 +70,6 @@ class Image extends AbstractModel implements RowOrderableInterface, Translatable
         'meta_data',
     ];
 
-    /**
-     * @var array<int, string>
-     */
-    protected array $rowOrderScopeColumns = [
-        'image_category_id',
-    ];
-
     protected $fillable = [
         'filename',
         'name',
