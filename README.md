@@ -26,7 +26,7 @@ composer config repositories.velor-cms-images vcs https://github.com/patrickzuur
 composer require patrickzuurbier/velor-cms-images:^1.2
 ```
 
-This package requires Velor CMS `^1.6`.
+This package requires Velor CMS `^1.8`.
 
 For local path development, keep the package repository outside the Velor CMS
 core repository. Temporarily point Composer to the package workspace and update
@@ -47,7 +47,7 @@ composer config repositories.velor-cms-images vcs https://github.com/patrickzuur
 ```
 
 The package service provider is auto-discovered by Laravel. When enabled, it
-registers resources, policies, sidebar items, CMS routes, translations,
+registers resources, policies, CMS menu items, CMS routes, translations,
 migrations, views, services, and the image regeneration command.
 
 Publish the package migrations when the application should own them:
@@ -204,7 +204,7 @@ composer remove patrickzuurbier/velor-cms-images
 
 Velor CMS core should continue to boot without this package once no image
 resources are configured. Package-owned CMS routes, resources, policies,
-sidebar items, translations, services, commands, and loaded migrations disappear
+CMS menu items, translations, services, commands, and loaded migrations disappear
 with the package. Existing database tables, uploaded files, and published files
 are project data and are not deleted automatically by Composer.
 

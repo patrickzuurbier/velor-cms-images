@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Velor\Images\Providers;
 
-use App\Data\Cms\SidebarItemData;
 use App\Services\Authorization\Contracts\PolicyRegistryInterface;
-use App\Services\CmsNavigation\Contracts\SidebarItemRegistryInterface;
+use App\Services\CmsMenu\Contracts\CmsMenuItemRegistryInterface;
+use App\Services\CmsMenu\Data\CmsMenuItemData;
 use App\Services\CmsRouting\Contracts\CmsRouteRegistrarInterface;
 use App\Services\Resources\Contracts\ResourceRegistryInterface;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
@@ -101,7 +101,7 @@ class ImagesServiceProvider extends ServiceProvider
         CmsRouteRegistrarInterface $cmsRoutes,
         ResourceRegistryInterface $resources,
         PolicyRegistryInterface $policies,
-        SidebarItemRegistryInterface $sidebarItems,
+        CmsMenuItemRegistryInterface $cmsMenuItems,
         ConfigRepository $config,
     ): void {
         $this->loadTranslationsFrom(__DIR__.'/../../lang', 'velor-images');
@@ -122,13 +122,13 @@ class ImagesServiceProvider extends ServiceProvider
             $policies->register(ImageCategory::class, $this->configuredClass($config, 'velor-images.policies.'.ImageCategory::class, ImageCategoryPolicy::class));
             $policies->register(Image::class, $this->configuredClass($config, 'velor-images.policies.'.Image::class, ImagePolicy::class));
 
-            $sidebarItems->registerBefore(
+            $cmsMenuItems->registerBefore(
                 'navigations.index',
-                new SidebarItemData(Image::class, 'images.index', 'velor-images::resources.images.plural', 'bi-images'),
+                new CmsMenuItemData(Image::class, 'images.index', 'velor-images::resources.images.plural', 'bi-images'),
             );
-            $sidebarItems->registerBefore(
+            $cmsMenuItems->registerBefore(
                 'navigations.index',
-                new SidebarItemData(ImageCategory::class, 'image-categories.index', 'velor-images::resources.image-categories.plural', 'bi-tags'),
+                new CmsMenuItemData(ImageCategory::class, 'image-categories.index', 'velor-images::resources.image-categories.plural', 'bi-tags'),
             );
 
             $cmsRoutes->loadAuthenticated(__DIR__.'/../../routes/cms.php');
