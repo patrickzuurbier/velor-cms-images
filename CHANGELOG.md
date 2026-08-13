@@ -6,6 +6,8 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-08-13
+
 ### Changed
 
 - Updated the package to use Velor CMS `^1.8` CMS menu registration contracts.
@@ -73,7 +75,8 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 - Removed the unused legacy image category config; image categories are managed
   as database records.
 
-[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.2.1...HEAD
+[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.3.0...HEAD
+[1.3.0]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.2.1...1.3.0
 [1.2.1]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.2.0...1.2.1
 [1.2.0]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.1.2...1.2.0
 [1.1.2]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.1.1...1.1.2
