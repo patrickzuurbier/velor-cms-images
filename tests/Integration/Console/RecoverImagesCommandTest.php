@@ -5,19 +5,22 @@ declare(strict_types=1);
 namespace Velor\Images\Tests\Integration\Console;
 
 use Illuminate\Console\Command;
-use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Testing\PendingCommand;
 use Tests\Integration\AbstractDatabaseIntegrationTestCase;
 use Velor\Images\Models\Image;
+use Velor\Images\Tests\Concerns\UsesFakeS3Disk;
+
+require_once __DIR__.'/../../Concerns/UsesFakeS3Disk.php';
 
 class RecoverImagesCommandTest extends AbstractDatabaseIntegrationTestCase
 {
+    use UsesFakeS3Disk;
+
     public function test_it_recovers_missing_image_rows_from_s3(): void
     {
-        Storage::fake('s3');
+        $this->fakeS3Disk();
         $imageId = (string) Str::uuid();
         $original = UploadedFile::fake()->image('lost.jpg', 640, 480);
         $thumbnail = UploadedFile::fake()->image('thumbnail.webp', 320, 240);
@@ -59,7 +62,7 @@ class RecoverImagesCommandTest extends AbstractDatabaseIntegrationTestCase
 
     public function test_dry_run_does_not_insert_rows(): void
     {
-        Storage::fake('s3');
+        $this->fakeS3Disk();
         $imageId = (string) Str::uuid();
         $original = UploadedFile::fake()->image('lost.png', 200, 100);
         $this->s3Disk()->putFileAs("images/{$imageId}", $original, 'original.png');
@@ -77,7 +80,7 @@ class RecoverImagesCommandTest extends AbstractDatabaseIntegrationTestCase
 
     public function test_it_skips_existing_image_rows(): void
     {
-        Storage::fake('s3');
+        $this->fakeS3Disk();
         $image = Image::factory()->create([
             'filename'   => 'existing.jpg',
             'name'       => 'Existing image',
@@ -96,12 +99,12 @@ class RecoverImagesCommandTest extends AbstractDatabaseIntegrationTestCase
 
         $this->assertSame(1, Image::query()->whereKey($image->id)->count());
         $this->assertSame('Existing image', $image->refresh()->name);
-        $this->assertSame(7, $image->sort_order);
+        $this->assertSame(1, $image->sort_order);
     }
 
     public function test_it_skips_unreadable_originals(): void
     {
-        Storage::fake('s3');
+        $this->fakeS3Disk();
         $imageId = (string) Str::uuid();
         $this->s3Disk()->put("images/{$imageId}/original.jpg", 'not an image');
 
@@ -115,10 +118,5 @@ class RecoverImagesCommandTest extends AbstractDatabaseIntegrationTestCase
             ->run();
 
         $this->assertDatabaseMissing('images', ['id' => $imageId]);
-    }
-
-    protected function s3Disk(): Filesystem
-    {
-        return Storage::disk('s3');
     }
 }

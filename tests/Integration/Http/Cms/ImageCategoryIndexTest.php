@@ -103,6 +103,8 @@ class ImageCategoryIndexTest extends AbstractDatabaseIntegrationTestCase
                 (string) $second->id,
                 (string) $first->id,
             ],
+            'context_key'   => 'image_category_id',
+            'context_value' => (string) $category->id,
         ]);
 
         $response->assertNoContent();
@@ -129,6 +131,7 @@ class ImageCategoryIndexTest extends AbstractDatabaseIntegrationTestCase
                 (string) $second->id,
                 (string) $first->id,
             ],
+            'context_key' => 'image_category_id',
         ]);
 
         $response->assertNoContent();

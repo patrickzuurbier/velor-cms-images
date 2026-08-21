@@ -65,7 +65,6 @@ class ImageOrderServiceTest extends AbstractDatabaseIntegrationTestCase
 
         $service = $this->app->make(ImageOrderServiceInterface::class);
         $service->moveToCategory($image, (string) $slides->id);
-        $image->save();
 
         $this->assertSame((string) $slides->id, $image->refresh()->image_category_id);
         $this->assertSame(3, $image->sort_order);
@@ -95,7 +94,7 @@ class ImageOrderServiceTest extends AbstractDatabaseIntegrationTestCase
         $this->assertSame(1, $third->refresh()->sort_order);
     }
 
-    public function test_reordering_visible_images_keeps_existing_order_slots(): void
+    public function test_reordering_visible_images_compacts_order_positions(): void
     {
         $category = ImageCategory::factory()->create(['name' => 'News']);
         $first = Image::factory()->create([
@@ -124,9 +123,9 @@ class ImageOrderServiceTest extends AbstractDatabaseIntegrationTestCase
             scopeValue: (string) $category->id,
         );
 
-        $this->assertSame(20, $first->refresh()->sort_order);
-        $this->assertSame(30, $second->refresh()->sort_order);
-        $this->assertSame(10, $third->refresh()->sort_order);
+        $this->assertSame(2, $first->refresh()->sort_order);
+        $this->assertSame(3, $second->refresh()->sort_order);
+        $this->assertSame(1, $third->refresh()->sort_order);
     }
 
     public function test_deleting_category_moves_images_to_common_without_order_collisions(): void

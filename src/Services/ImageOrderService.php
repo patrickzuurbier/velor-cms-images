@@ -4,25 +4,24 @@ declare(strict_types=1);
 
 namespace Velor\Images\Services;
 
+use App\Services\Resources\Contracts\ResourceRowOrderServiceInterface;
+use Illuminate\Database\ConnectionInterface;
 use Velor\Images\Models\Image;
 use Velor\Images\Services\Contracts\ImageOrderServiceInterface;
-use Illuminate\Database\ConnectionInterface;
 
 class ImageOrderService implements ImageOrderServiceInterface
 {
-    protected const TEMPORARY_ORDER_OFFSET = 1000000;
-
     public function __construct(
         protected ConnectionInterface $database,
+        protected ResourceRowOrderServiceInterface $rowOrderService,
     ) {
     }
 
     public function nextSortOrder(?string $categoryId): int
     {
-        $query = Image::query()
-            ->where('image_category_id', $categoryId);
-
-        return ((int) $query->max('sort_order')) + 1;
+        return (new Image([
+            'image_category_id' => $categoryId,
+        ]))->nextRowOrderPosition();
     }
 
     public function moveToCategory(Image $image, ?string $categoryId): void
@@ -42,13 +41,18 @@ class ImageOrderService implements ImageOrderServiceInterface
 
             $image->setAttribute('image_category_id', $categoryId);
             $image->setAttribute('sort_order', 0);
-            $image->save();
+            $image->saveQuietly();
 
             if ($currentCategoryId !== $categoryId) {
-                $this->rewriteSortOrders($this->orderedIds(is_string($currentCategoryId) ? $currentCategoryId : null));
+                $this->reorderScope(
+                    categoryId: is_string($currentCategoryId) ? $currentCategoryId : null,
+                    imageIds: $this->orderedIds(is_string($currentCategoryId) ? $currentCategoryId : null),
+                );
             }
 
-            $this->rewriteSortOrders($targetIds);
+            $this->reorderScope($categoryId, $targetIds);
+
+            $image->refresh();
         });
     }
 
@@ -69,18 +73,14 @@ class ImageOrderService implements ImageOrderServiceInterface
     /**
      * @param array<int, string> $imageIds
      */
-    protected function rewriteSortOrders(array $imageIds): void
+    protected function reorderScope(?string $categoryId, array $imageIds): void
     {
-        foreach ($imageIds as $index => $id) {
-            Image::query()
-                ->whereKey($id)
-                ->update(['sort_order' => self::TEMPORARY_ORDER_OFFSET + $index + 1]);
-        }
-
-        foreach ($imageIds as $index => $id) {
-            Image::query()
-                ->whereKey($id)
-                ->update(['sort_order' => $index + 1]);
-        }
+        $this->rowOrderService->reorder(
+            modelClass: Image::class,
+            orderColumn: (new Image())->rowOrderColumn(),
+            ids: $imageIds,
+            scopeColumn: 'image_category_id',
+            scopeValue: $categoryId,
+        );
     }
 }

@@ -4,17 +4,20 @@ declare(strict_types=1);
 
 namespace Velor\Images\Tests\Integration\Images;
 
-use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use Tests\Integration\AbstractDatabaseIntegrationTestCase;
 use Velor\Images\Models\ImageCategory;
 use Velor\Images\Services\Contracts\ImageFormatGeneratorInterface;
 use Velor\Images\Services\Contracts\ImagePathGeneratorInterface;
 use Velor\Images\Services\Contracts\ImageUploadServiceInterface;
+use Velor\Images\Tests\Concerns\UsesFakeS3Disk;
+
+require_once __DIR__.'/../../Concerns/UsesFakeS3Disk.php';
 
 class ImageUploadServiceTest extends AbstractDatabaseIntegrationTestCase
 {
+    use UsesFakeS3Disk;
+
     protected function tearDown(): void
     {
         $this->s3Disk()->deleteDirectory('images');
@@ -24,7 +27,7 @@ class ImageUploadServiceTest extends AbstractDatabaseIntegrationTestCase
 
     public function test_it_stores_original_and_configured_formats_for_uploaded_image(): void
     {
-        Storage::fake('s3');
+        $this->fakeS3Disk();
         $category = ImageCategory::factory()->create(['name' => 'News']);
 
         $image = $this->imageUploadService()->upload(
@@ -56,7 +59,7 @@ class ImageUploadServiceTest extends AbstractDatabaseIntegrationTestCase
 
     public function test_it_deletes_image_directory_and_model(): void
     {
-        Storage::fake('s3');
+        $this->fakeS3Disk();
 
         $image = $this->imageUploadService()->upload(
             UploadedFile::fake()->image('delete-me.jpg', 640, 480),
@@ -72,7 +75,7 @@ class ImageUploadServiceTest extends AbstractDatabaseIntegrationTestCase
 
     public function test_it_removes_stale_formats_when_regenerating_image_formats(): void
     {
-        Storage::fake('s3');
+        $this->fakeS3Disk();
 
         $image = $this->imageUploadService()->upload(
             UploadedFile::fake()->image('regenerate-me.jpg', 1200, 800),
@@ -118,10 +121,5 @@ class ImageUploadServiceTest extends AbstractDatabaseIntegrationTestCase
     protected function pathGenerator(): ImagePathGeneratorInterface
     {
         return $this->app->make(ImagePathGeneratorInterface::class);
-    }
-
-    protected function s3Disk(): Filesystem
-    {
-        return Storage::disk('s3');
     }
 }

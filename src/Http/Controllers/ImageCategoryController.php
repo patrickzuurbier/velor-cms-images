@@ -76,7 +76,6 @@ class ImageCategoryController extends Controller
     {
         foreach ($imageCategory->images()->orderBy('sort_order')->get() as $image) {
             $this->imageOrderService->moveToCategory($image, null);
-            $image->save();
         }
 
         $imageCategory->delete();

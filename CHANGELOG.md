@@ -6,6 +6,16 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+### Changed
+
+- Removed package config toggles for resources and policies; installed image
+  packages now register their own resources, policies, routes, and menu items.
+- Consolidated image schema changes into initial package migrations.
+- Switched image order forms to the Velor CMS `Order` field and scoped image row
+  ordering by image category.
+- Removed rollback methods from package migrations.
+- Updated factories to use compact row order defaults and `$this->faker`.
+
 ## [1.3.0] - 2026-08-13
 
 ### Changed

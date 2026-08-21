@@ -2,26 +2,7 @@
 
 declare(strict_types=1);
 
-use Velor\Images\Models\Image;
-use Velor\Images\Models\ImageCategory;
-use Velor\Images\Policies\ImageCategoryPolicy;
-use Velor\Images\Policies\ImagePolicy;
-use Velor\Images\Resources\ImageCategoryResource;
-use Velor\Images\Resources\ImageResource;
-
 return [
-    'enabled' => true,
-
-    'resources' => [
-        'image_category' => ImageCategoryResource::class,
-        'image'          => ImageResource::class,
-    ],
-
-    'policies' => [
-        ImageCategory::class => ImageCategoryPolicy::class,
-        Image::class         => ImagePolicy::class,
-    ],
-
     'max_size' => 10240,
 
     'mimes' => [

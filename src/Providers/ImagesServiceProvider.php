@@ -9,7 +9,6 @@ use App\Services\CmsMenu\Contracts\CmsMenuItemRegistryInterface;
 use App\Services\CmsMenu\Data\CmsMenuItemData;
 use App\Services\CmsRouting\Contracts\CmsRouteRegistrarInterface;
 use App\Services\Resources\Contracts\ResourceRegistryInterface;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Support\ServiceProvider;
 use Velor\Images\Console\Commands\RecoverImagesCommand;
 use Velor\Images\Console\Commands\RegenerateImagesCommand;
@@ -102,7 +101,6 @@ class ImagesServiceProvider extends ServiceProvider
         ResourceRegistryInterface $resources,
         PolicyRegistryInterface $policies,
         CmsMenuItemRegistryInterface $cmsMenuItems,
-        ConfigRepository $config,
     ): void {
         $this->loadTranslationsFrom(__DIR__.'/../../lang', 'velor-images');
         $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
@@ -115,24 +113,22 @@ class ImagesServiceProvider extends ServiceProvider
             ]);
         }
 
-        if ($config->get('velor-images.enabled') === true) {
-            $resources->register($this->configuredClass($config, 'velor-images.resources.image_category', ImageCategoryResource::class));
-            $resources->register($this->configuredClass($config, 'velor-images.resources.image', ImageResource::class));
+        $resources->register(ImageCategoryResource::class);
+        $resources->register(ImageResource::class);
 
-            $policies->register(ImageCategory::class, $this->configuredClass($config, 'velor-images.policies.'.ImageCategory::class, ImageCategoryPolicy::class));
-            $policies->register(Image::class, $this->configuredClass($config, 'velor-images.policies.'.Image::class, ImagePolicy::class));
+        $policies->register(ImageCategory::class, ImageCategoryPolicy::class);
+        $policies->register(Image::class, ImagePolicy::class);
 
-            $cmsMenuItems->registerBefore(
-                'navigations.index',
-                new CmsMenuItemData(Image::class, 'images.index', 'velor-images::resources.images.plural', 'bi-images'),
-            );
-            $cmsMenuItems->registerBefore(
-                'navigations.index',
-                new CmsMenuItemData(ImageCategory::class, 'image-categories.index', 'velor-images::resources.image-categories.plural', 'bi-tags'),
-            );
+        $cmsMenuItems->registerBefore(
+            'navigations.index',
+            new CmsMenuItemData(Image::class, 'images.index', 'velor-images::resources.images.plural', 'bi-images'),
+        );
+        $cmsMenuItems->registerBefore(
+            'navigations.index',
+            new CmsMenuItemData(ImageCategory::class, 'image-categories.index', 'velor-images::resources.image-categories.plural', 'bi-tags'),
+        );
 
-            $cmsRoutes->loadAuthenticated(__DIR__.'/../../routes/cms.php');
-        }
+        $cmsRoutes->loadAuthenticated(__DIR__.'/../../routes/cms.php');
 
         $this->publishes([
             __DIR__.'/../../config/velor-images.php' => $this->app->configPath('velor-images.php'),
@@ -153,20 +149,5 @@ class ImagesServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../../resources/views' => $this->app->resourcePath('views/vendor/velor-images'),
         ], 'velor-images-views');
-    }
-
-    /**
-     * @param  class-string  $default
-     * @return class-string
-     */
-    protected function configuredClass(ConfigRepository $config, string $key, string $default): string
-    {
-        $value = $config->get($key);
-
-        if (! is_string($value) || ! class_exists($value)) {
-            return $default;
-        }
-
-        return $value;
     }
 }

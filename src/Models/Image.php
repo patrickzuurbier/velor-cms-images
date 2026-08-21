@@ -9,6 +9,7 @@ use App\Concerns\Models\HasRowOrdering;
 use App\Contracts\Models\RowOrderableInterface;
 use App\Contracts\Models\TranslatableInterface;
 use App\Models\AbstractModel;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -53,7 +54,6 @@ class Image extends AbstractModel implements RowOrderableInterface, Translatable
     public array $sortable = [
         'name',
         'filename',
-        'sort_order',
         'created_at',
         'updated_at',
     ];
@@ -70,6 +70,13 @@ class Image extends AbstractModel implements RowOrderableInterface, Translatable
         'meta_data',
     ];
 
+    /**
+     * @var array<int, string>
+     */
+    protected array $rowOrderScopeColumns = [
+        'image_category_id',
+    ];
+
     protected $fillable = [
         'filename',
         'name',
@@ -79,25 +86,34 @@ class Image extends AbstractModel implements RowOrderableInterface, Translatable
         'meta_data',
     ];
 
-    public function getCategoryNameAttribute(): string
+    /**
+     * @return Attribute<string, never>
+     */
+    protected function categoryName(): Attribute
     {
-        $category = $this->category;
+        return Attribute::make(
+            get: function (): string {
+                $category = $this->category;
 
-        if (! $category instanceof ImageCategory) {
-            return 'Common';
-        }
-
-        return $category->name;
+                return $category instanceof ImageCategory
+                    ? $category->name
+                    : 'Common';
+            },
+        );
     }
 
     /**
-     * @return array<string, mixed>
+     * @return Attribute<array<string, mixed>, never>
      */
-    public function getOriginalMetaDataAttribute(): array
+    protected function originalMetaData(): Attribute
     {
-        $original = $this->metaData()['original'] ?? [];
+        return Attribute::make(
+            get: function (): array {
+                $original = $this->metaData()['original'] ?? [];
 
-        return is_array($original) ? $original : [];
+                return is_array($original) ? $original : [];
+            },
+        );
     }
 
     /**

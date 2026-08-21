@@ -46,7 +46,7 @@ composer config --unset repositories.velor-cms-images
 composer config repositories.velor-cms-images vcs https://github.com/patrickzuurbier/velor-cms-images.git
 ```
 
-The package service provider is auto-discovered by Laravel. When enabled, it
+The package service provider is auto-discovered by Laravel. When installed, it
 registers resources, policies, CMS menu items, CMS routes, translations,
 migrations, views, services, and the image regeneration command.
 
@@ -60,12 +60,6 @@ Then run the database migrations:
 
 ```bash
 php artisan migrate
-```
-
-For local development, use the Makefile from the Velor CMS host application:
-
-```bash
-make migrate
 ```
 
 Optionally publish and run the image category seeder for local data:

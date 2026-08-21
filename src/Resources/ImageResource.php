@@ -11,7 +11,7 @@ use App\Resources\Fields\ImageFormats;
 use App\Resources\Fields\ImageMetaData;
 use App\Resources\Fields\ImagePreview;
 use App\Resources\Fields\ImageUpload;
-use App\Resources\Fields\Number;
+use App\Resources\Fields\Order;
 use App\Resources\Fields\Select;
 use App\Resources\Fields\Text;
 use App\Resources\Fields\Textarea;
@@ -87,15 +87,9 @@ class ImageResource extends AbstractResource
             Text::make('category_name')
                 ->label(__('velor-images::resources.images.fields.category'))
                 ->exceptOnForms(),
-            Number::make('sort_order')
+            Order::make('sort_order')
                 ->label(__('velor-images::resources.images.fields.order'))
-                ->sortable()
-                ->hideOnCreate()
-                ->rules([
-                    'required',
-                    'integer',
-                    'min:1',
-                ]),
+                ->hideOnCreate(),
             Select::make('image_category_id')
                 ->label(__('velor-images::resources.images.fields.category'))
                 ->options(fn (): array => $this->categories())
@@ -172,6 +166,8 @@ class ImageResource extends AbstractResource
         return new ResourceRowOrderingData(
             url: $this->urlGenerator->route('resource-row-order.update', ['resource' => (new Image())->getTable()]),
             itemsKey: 'images',
+            contextKey: 'image_category_id',
+            contextValue: $category === 'common' ? null : (string) $category,
         );
     }
 

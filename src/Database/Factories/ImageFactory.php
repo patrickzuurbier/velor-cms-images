@@ -20,18 +20,17 @@ class ImageFactory extends Factory
     public function definition(): array
     {
         return [
-            'filename'          => fake()->slug() . '.jpg',
-            'name'              => fake()->words(2, true),
+            'filename'          => $this->faker->slug() . '.jpg',
+            'name'              => $this->faker->words(2, true),
             'image_category_id' => null,
-            'sort_order'        => fake()->unique()->numberBetween(1, 100000),
             'description'       => null,
             'meta_data'         => [
                 'original' => [
                     'extension' => 'jpg',
                     'mime_type' => 'image/jpeg',
-                    'size'      => fake()->numberBetween(10000, 500000),
-                    'width'     => fake()->numberBetween(800, 2400),
-                    'height'    => fake()->numberBetween(600, 1600),
+                    'size'      => $this->faker->numberBetween(10000, 500000),
+                    'width'     => $this->faker->numberBetween(800, 2400),
+                    'height'    => $this->faker->numberBetween(600, 1600),
                 ],
             ],
         ];
