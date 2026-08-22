@@ -66,7 +66,7 @@ Optionally publish and run the image category seeder for local data:
 
 ```bash
 php artisan vendor:publish --tag=velor-images-seeders
-php artisan db:seed --class=Velor\Images\Database\Seeders\ImageCategoriesTableSeeder
+php artisan db:seed --class='Velor\Images\Database\Seeders\ImageCategoriesTableSeeder'
 ```
 
 ## Package Contents
