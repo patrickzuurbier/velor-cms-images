@@ -23,10 +23,10 @@ Install the package in a Velor CMS application:
 
 ```bash
 composer config repositories.velor-cms-images vcs https://github.com/patrickzuurbier/velor-cms-images.git
-composer require patrickzuurbier/velor-cms-images:^1.3
+composer require patrickzuurbier/velor-cms-images:^1.4
 ```
 
-This package requires Velor CMS `^1.8`.
+This package requires Velor CMS `^1.9`.
 
 For local path development, keep the package repository outside the Velor CMS
 core repository. Temporarily point Composer to the package workspace and update

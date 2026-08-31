@@ -8,10 +8,11 @@ use App\Http\Controllers\Controller;
 use Velor\Images\Http\Requests\ImageStoreRequest;
 use Velor\Images\Http\Requests\ImageUpdateRequest;
 use Velor\Images\Models\ImageCategory;
+use Velor\Images\Resources\ImageResource;
 use Velor\Images\Services\Contracts\ImageOrderServiceInterface;
 use Velor\Images\Services\Contracts\ImageUploadServiceInterface;
-use App\Models\AbstractModel;
 use Velor\Images\Models\Image;
+use App\Models\AbstractModel;
 use App\Services\Resources\Contracts\ResourceIndexQueryInterface;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Contracts\View\View;
@@ -25,6 +26,7 @@ class ImageController extends Controller
         protected ResourceIndexQueryInterface $resourceIndexQuery,
         protected ImageUploadServiceInterface $imageUploadService,
         protected ImageOrderServiceInterface $imageOrderService,
+        protected ImageResource $imageResource,
     ) {
         $this->authorizeResource(Image::class);
     }
@@ -33,7 +35,7 @@ class ImageController extends Controller
     {
         return view('cms.layouts.index', [
             'pagination' => $this->resourceIndexQuery->paginate(
-                model: Image::class,
+                resource: $this->imageResource,
                 search: $request->string('search')->toString(),
                 filter: function (EloquentBuilder $query) use ($request): void {
                     $this->applyCategoryFilter($query, $request);
@@ -43,14 +45,14 @@ class ImageController extends Controller
                     }
                 },
             ),
-            'model' => new Image(),
+            'resource' => $this->imageResource,
         ]);
     }
 
     public function create(): View
     {
         return view('cms.layouts.form', [
-            'model' => new Image(),
+            'resource' => $this->imageResource,
         ]);
     }
 
@@ -79,14 +81,14 @@ class ImageController extends Controller
     public function show(Image $image): View
     {
         return view('cms.layouts.show', [
-            'model' => $image,
+            'resource' => $this->imageResource,
         ]);
     }
 
     public function edit(Image $image): View
     {
         return view('cms.layouts.form', [
-            'model' => $image,
+            'resource' => $this->imageResource,
         ]);
     }
 

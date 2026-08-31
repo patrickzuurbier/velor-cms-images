@@ -113,8 +113,8 @@ class ImagesServiceProvider extends ServiceProvider
             ]);
         }
 
-        $resources->register(ImageCategoryResource::class);
-        $resources->register(ImageResource::class);
+        $resources->register($this->app->make(ImageCategoryResource::class));
+        $resources->register($this->app->make(ImageResource::class));
 
         $policies->register(ImageCategory::class, ImageCategoryPolicy::class);
         $policies->register(Image::class, ImagePolicy::class);

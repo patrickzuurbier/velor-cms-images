@@ -7,6 +7,7 @@ namespace Velor\Images\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Velor\Images\Http\Requests\ImageCategoryRequest;
 use Velor\Images\Models\ImageCategory;
+use Velor\Images\Resources\ImageCategoryResource;
 use Velor\Images\Services\Contracts\ImageOrderServiceInterface;
 use App\Services\Resources\Contracts\ResourceIndexQueryInterface;
 use Illuminate\Contracts\View\View;
@@ -18,6 +19,7 @@ class ImageCategoryController extends Controller
     public function __construct(
         protected ResourceIndexQueryInterface $resourceIndexQuery,
         protected ImageOrderServiceInterface $imageOrderService,
+        protected ImageCategoryResource $imageCategoryResource,
     ) {
         $this->authorizeResource(ImageCategory::class, 'image_category');
     }
@@ -26,17 +28,17 @@ class ImageCategoryController extends Controller
     {
         return view('cms.layouts.index', [
             'pagination' => $this->resourceIndexQuery->paginate(
-                model: ImageCategory::class,
+                resource: $this->imageCategoryResource,
                 search: $request->string('search')->toString(),
             ),
-            'model' => new ImageCategory(),
+            'resource' => $this->imageCategoryResource,
         ]);
     }
 
     public function create(): View
     {
         return view('cms.layouts.form', [
-            'model' => new ImageCategory(),
+            'resource' => $this->imageCategoryResource,
         ]);
     }
 
@@ -52,14 +54,14 @@ class ImageCategoryController extends Controller
     public function show(ImageCategory $imageCategory): View
     {
         return view('cms.layouts.show', [
-            'model' => $imageCategory,
+            'resource' => $this->imageCategoryResource,
         ]);
     }
 
     public function edit(ImageCategory $imageCategory): View
     {
         return view('cms.layouts.form', [
-            'model' => $imageCategory,
+            'resource' => $this->imageCategoryResource,
         ]);
     }
 

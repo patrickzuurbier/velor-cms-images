@@ -6,6 +6,11 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+### Changed
+
+- Updated controllers and resource registration for the Velor CMS `^1.9`
+  resource-first contract.
+
 ## [1.4.0] - 2026-08-22
 
 ### Changed
