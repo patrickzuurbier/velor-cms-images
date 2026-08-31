@@ -23,7 +23,7 @@ Install the package in a Velor CMS application:
 
 ```bash
 composer config repositories.velor-cms-images vcs https://github.com/patrickzuurbier/velor-cms-images.git
-composer require patrickzuurbier/velor-cms-images:^1.4
+composer require patrickzuurbier/velor-cms-images:^1.5
 ```
 
 This package requires Velor CMS `^1.9`.
