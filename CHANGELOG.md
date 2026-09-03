@@ -6,6 +6,13 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+## [1.5.1] - 2026-09-03
+
+### Fixed
+
+- Fixed resource validation requests to pass resource instances to Velor CMS
+  validation factories.
+
 ## [1.5.0] - 2026-08-31
 
 ### Changed
@@ -94,7 +101,8 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 - Removed the unused legacy image category config; image categories are managed
   as database records.
 
-[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.5.0...HEAD
+[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.5.1...HEAD
+[1.5.1]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.5.0...1.5.1
 [1.5.0]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.4.0...1.5.0
 [1.4.0]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.3.0...1.4.0
 [1.3.0]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.2.1...1.3.0
