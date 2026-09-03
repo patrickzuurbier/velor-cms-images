@@ -8,13 +8,14 @@ use App\Contracts\Factories\Validation\ResourceValidationAttributesFactoryInterf
 use App\Contracts\Factories\Validation\ResourceValidationRulesFactoryInterface;
 use App\Http\Requests\AbstractFormRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Velor\Images\Models\Image;
+use Velor\Images\Resources\ImageResource;
 
 class ImageUpdateRequest extends AbstractFormRequest
 {
     public function __construct(
         protected ResourceValidationRulesFactoryInterface $rulesFactory,
         protected ResourceValidationAttributesFactoryInterface $attributesFactory,
+        protected ImageResource $imageResource,
     ) {
         parent::__construct();
     }
@@ -29,7 +30,7 @@ class ImageUpdateRequest extends AbstractFormRequest
      */
     public function rules(): array
     {
-        return $this->rulesFactory->make(Image::class);
+        return $this->rulesFactory->make($this->imageResource);
     }
 
     /**
@@ -37,7 +38,7 @@ class ImageUpdateRequest extends AbstractFormRequest
      */
     public function attributes(): array
     {
-        return $this->attributesFactory->make(Image::class);
+        return $this->attributesFactory->make($this->imageResource);
     }
 
     /**
