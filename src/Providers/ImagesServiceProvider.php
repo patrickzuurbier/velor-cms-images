@@ -18,6 +18,8 @@ use Velor\Images\Policies\ImageCategoryPolicy;
 use Velor\Images\Policies\ImagePolicy;
 use Velor\Images\Resources\ImageCategoryResource;
 use Velor\Images\Resources\ImageResource;
+use Velor\Images\Repositories\ImageCategoryRepository;
+use Velor\Images\Repositories\Contracts\ImageCategoryRepositoryInterface;
 use Velor\Images\Services\Contracts\ImageDisplayFormatResolverInterface;
 use Velor\Images\Services\Contracts\ImageFormatDataFactoryInterface;
 use Velor\Images\Services\Contracts\ImageFormatGeneratorInterface;
@@ -44,6 +46,11 @@ class ImagesServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../../config/velor-images.php', 'velor-images');
+
+        $this->app->singleton(
+            ImageCategoryRepositoryInterface::class,
+            ImageCategoryRepository::class,
+        );
 
         $this->app->singleton(
             ImagePathGeneratorInterface::class,

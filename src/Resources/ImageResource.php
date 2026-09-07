@@ -23,6 +23,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Velor\Images\Models\Image;
 use Velor\Images\Models\ImageCategory;
+use Velor\Images\Repositories\Contracts\ImageCategoryRepositoryInterface;
 use Velor\Images\Services\Contracts\ImageDisplayFormatResolverInterface;
 use Velor\Images\Services\Contracts\ImageFormatDataFactoryInterface;
 use Velor\Images\Services\Contracts\ImageUrlGeneratorInterface;
@@ -37,6 +38,7 @@ class ImageResource extends AbstractResource
         protected ImageUrlGeneratorInterface $imageUrlGenerator,
         protected ImageDisplayFormatResolverInterface $imageDisplayFormatResolver,
         protected ImageFormatDataFactoryInterface $imageFormatDataFactory,
+        protected ImageCategoryRepositoryInterface $imageCategoryRepository,
     ) {
     }
 
@@ -150,7 +152,7 @@ class ImageResource extends AbstractResource
             return [];
         }
 
-        return ImageCategory::query()->whereKey($category)->exists()
+        return $this->imageCategoryRepository->exists($category)
             ? ['image_category' => $category]
             : [];
     }
@@ -207,10 +209,7 @@ class ImageResource extends AbstractResource
      */
     protected function orderedCategories(): array
     {
-        return ImageCategory::query()
-            ->orderBy('name')
-            ->get()
-            ->all();
+        return $this->imageCategoryRepository->orderedByName();
     }
 
     protected function imageUrl(Model $model, string $action): ?string

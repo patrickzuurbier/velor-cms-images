@@ -5,20 +5,20 @@ declare(strict_types=1);
 namespace Velor\Images\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Velor\Images\Http\Requests\ImageStoreRequest;
-use Velor\Images\Http\Requests\ImageUpdateRequest;
-use Velor\Images\Models\ImageCategory;
-use Velor\Images\Resources\ImageResource;
-use Velor\Images\Services\Contracts\ImageOrderServiceInterface;
-use Velor\Images\Services\Contracts\ImageUploadServiceInterface;
 use Velor\Images\Models\Image;
 use App\Models\AbstractModel;
-use App\Services\Resources\Contracts\ResourceIndexQueryInterface;
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Http\RedirectResponse;
+use Velor\Images\Resources\ImageResource;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Velor\Images\Http\Requests\ImageStoreRequest;
+use Velor\Images\Http\Requests\ImageUpdateRequest;
+use Velor\Images\Services\Contracts\ImageOrderServiceInterface;
+use Velor\Images\Services\Contracts\ImageUploadServiceInterface;
+use App\Services\Resources\Contracts\ResourceIndexQueryInterface;
+use Velor\Images\Repositories\Contracts\ImageCategoryRepositoryInterface;
 
 class ImageController extends Controller
 {
@@ -27,6 +27,7 @@ class ImageController extends Controller
         protected ImageUploadServiceInterface $imageUploadService,
         protected ImageOrderServiceInterface $imageOrderService,
         protected ImageResource $imageResource,
+        protected ImageCategoryRepositoryInterface $imageCategoryRepository,
     ) {
         $this->authorizeResource(Image::class);
     }
@@ -138,7 +139,7 @@ class ImageController extends Controller
             return;
         }
 
-        if (! ImageCategory::query()->whereKey($category)->exists()) {
+        if (! $this->imageCategoryRepository->exists($category)) {
             return;
         }
 
