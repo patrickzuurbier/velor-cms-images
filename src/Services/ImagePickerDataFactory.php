@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace Velor\Images\Services;
 
+use Illuminate\Contracts\Config\Repository;
 use Velor\Images\Models\Image;
+use Velor\Images\Repositories\Contracts\ImageRepositoryInterface;
 use Velor\Images\Services\Contracts\ImagePickerDataFactoryInterface;
 use Velor\Images\Services\Contracts\ImageUrlGeneratorInterface;
-use Illuminate\Contracts\Config\Repository;
 
 class ImagePickerDataFactory implements ImagePickerDataFactoryInterface
 {
     public function __construct(
         protected ImageUrlGeneratorInterface $imageUrlGenerator,
         protected Repository $config,
+        protected ImageRepositoryInterface $imageRepository,
     ) {
     }
 
@@ -31,9 +33,8 @@ class ImagePickerDataFactory implements ImagePickerDataFactoryInterface
      */
     public function make(): array
     {
-        return Image::query()
-            ->orderBy('name')
-            ->get()
+        return $this->imageRepository
+            ->orderedForPicker()
             ->map(fn (Image $image): array => $this->imageData($image))
             ->all();
     }

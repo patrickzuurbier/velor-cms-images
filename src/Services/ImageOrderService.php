@@ -7,6 +7,7 @@ namespace Velor\Images\Services;
 use App\Services\Resources\Contracts\ResourceRowOrderServiceInterface;
 use Illuminate\Database\ConnectionInterface;
 use Velor\Images\Models\Image;
+use Velor\Images\Repositories\Contracts\ImageRepositoryInterface;
 use Velor\Images\Services\Contracts\ImageOrderServiceInterface;
 
 class ImageOrderService implements ImageOrderServiceInterface
@@ -14,6 +15,7 @@ class ImageOrderService implements ImageOrderServiceInterface
     public function __construct(
         protected ConnectionInterface $database,
         protected ResourceRowOrderServiceInterface $rowOrderService,
+        protected ImageRepositoryInterface $imageRepository,
     ) {
     }
 
@@ -34,7 +36,7 @@ class ImageOrderService implements ImageOrderServiceInterface
         $currentCategoryId = $image->getAttribute('image_category_id');
 
         $this->database->transaction(function () use ($image, $categoryId, $sortOrder, $currentCategoryId): void {
-            $targetIds = $this->orderedIds($categoryId, except: (string) $image->getKey());
+            $targetIds = $this->imageRepository->orderedIdsForCategory($categoryId, except: (string) $image->getKey());
             $targetOrder = max(1, min($sortOrder, count($targetIds) + 1));
 
             array_splice($targetIds, $targetOrder - 1, 0, [(string) $image->getKey()]);
@@ -46,7 +48,9 @@ class ImageOrderService implements ImageOrderServiceInterface
             if ($currentCategoryId !== $categoryId) {
                 $this->reorderScope(
                     categoryId: is_string($currentCategoryId) ? $currentCategoryId : null,
-                    imageIds: $this->orderedIds(is_string($currentCategoryId) ? $currentCategoryId : null),
+                    imageIds: $this->imageRepository->orderedIdsForCategory(
+                        is_string($currentCategoryId) ? $currentCategoryId : null,
+                    ),
                 );
             }
 
@@ -54,20 +58,6 @@ class ImageOrderService implements ImageOrderServiceInterface
 
             $image->refresh();
         });
-    }
-
-    /**
-     * @return array<int, string>
-     */
-    protected function orderedIds(?string $categoryId, ?string $except = null): array
-    {
-        return Image::query()
-            ->where('image_category_id', $categoryId)
-            ->when($except !== null, fn ($query) => $query->where('id', '<>', $except))
-            ->orderBy('sort_order')
-            ->pluck('id')
-            ->map(static fn (mixed $id): string => (string) $id)
-            ->all();
     }
 
     /**

@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use RuntimeException;
 use Throwable;
 use Velor\Images\Models\Image;
+use Velor\Images\Repositories\Contracts\ImageRepositoryInterface;
 use Velor\Images\Services\Contracts\ImageOrderServiceInterface;
 use Velor\Images\Services\Contracts\ImageRecoveryServiceInterface;
 
@@ -19,6 +20,7 @@ class ImageRecoveryService implements ImageRecoveryServiceInterface
     public function __construct(
         protected FilesystemFactory $filesystem,
         protected ImageOrderServiceInterface $imageOrderService,
+        protected ImageRepositoryInterface $imageRepository,
     ) {
     }
 
@@ -26,9 +28,7 @@ class ImageRecoveryService implements ImageRecoveryServiceInterface
     {
         $disk = $this->filesystem->disk('s3');
         $originals = $this->originals($disk);
-        $existingIds = Image::query()->pluck('id')->mapWithKeys(
-            static fn (mixed $id): array => [(string) $id => true],
-        )->all();
+        $existingIds = $this->imageRepository->existingIds();
         $recovered = 0;
         $nextSortOrder = $this->imageOrderService->nextSortOrder(null);
 

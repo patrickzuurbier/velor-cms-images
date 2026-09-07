@@ -19,7 +19,9 @@ use Velor\Images\Policies\ImagePolicy;
 use Velor\Images\Resources\ImageCategoryResource;
 use Velor\Images\Resources\ImageResource;
 use Velor\Images\Repositories\ImageCategoryRepository;
+use Velor\Images\Repositories\ImageRepository;
 use Velor\Images\Repositories\Contracts\ImageCategoryRepositoryInterface;
+use Velor\Images\Repositories\Contracts\ImageRepositoryInterface;
 use Velor\Images\Services\Contracts\ImageDisplayFormatResolverInterface;
 use Velor\Images\Services\Contracts\ImageFormatDataFactoryInterface;
 use Velor\Images\Services\Contracts\ImageFormatGeneratorInterface;
@@ -50,6 +52,11 @@ class ImagesServiceProvider extends ServiceProvider
         $this->app->singleton(
             ImageCategoryRepositoryInterface::class,
             ImageCategoryRepository::class,
+        );
+
+        $this->app->singleton(
+            ImageRepositoryInterface::class,
+            ImageRepository::class,
         );
 
         $this->app->singleton(
