@@ -6,6 +6,8 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+## [1.5.3] - 2026-09-21
+
 ### Fixed
 
 - Required GD and added an explicit WebP capability check before generated
@@ -112,7 +114,8 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 - Removed the unused legacy image category config; image categories are managed
   as database records.
 
-[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.5.2...HEAD
+[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.5.3...HEAD
+[1.5.3]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.5.2...1.5.3
 [1.5.2]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.5.1...1.5.2
 [1.5.1]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.5.0...1.5.1
 [1.5.0]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.4.0...1.5.0
