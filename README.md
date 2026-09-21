@@ -26,7 +26,7 @@ composer config repositories.velor-cms-images vcs https://github.com/patrickzuur
 composer require patrickzuurbier/velor-cms-images:^1.5
 ```
 
-This package requires Velor CMS `^1.9`.
+This package requires Velor CMS `^1.9` and PHP GD compiled with WebP support.
 
 For local path development, keep the package repository outside the Velor CMS
 core repository. Temporarily point Composer to the package workspace and update

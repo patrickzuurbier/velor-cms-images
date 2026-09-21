@@ -60,6 +60,7 @@ class ImageFormatGenerator implements ImageFormatGeneratorInterface
 
     protected function generateFromPath(Image $image, string $path, string $mimeType): void
     {
+        $this->ensureWebpSupport();
         $this->deleteGeneratedFormats($image);
 
         $formats = [];
@@ -77,6 +78,13 @@ class ImageFormatGenerator implements ImageFormatGeneratorInterface
         $metaData['formats'] = $formats;
         $image->setMetaData($metaData);
         $image->save();
+    }
+
+    protected function ensureWebpSupport(): void
+    {
+        if (! function_exists('imagewebp')) {
+            throw new RuntimeException('The GD extension must be compiled with WebP support.');
+        }
     }
 
     /**

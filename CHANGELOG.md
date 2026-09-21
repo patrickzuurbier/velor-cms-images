@@ -6,6 +6,11 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+### Fixed
+
+- Required GD and added an explicit WebP capability check before generated
+  image formats are replaced.
+
 ## [1.5.2] - 2026-09-07
 
 ### Changed
