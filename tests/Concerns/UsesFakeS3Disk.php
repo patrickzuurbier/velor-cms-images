@@ -12,9 +12,9 @@ trait UsesFakeS3Disk
 {
     protected function fakeS3Disk(): FilesystemContract
     {
-        $root = $this->getApplication()->storagePath('framework/testing/disks/s3');
+        $root = $this->app->storagePath('framework/testing/disks/s3');
 
-        $filesystem = $this->getApplication()->make(Filesystem::class);
+        $filesystem = $this->app->make(Filesystem::class);
         $filesystem->ensureDirectoryExists($root);
         $filesystem->cleanDirectory($root);
 
@@ -33,6 +33,6 @@ trait UsesFakeS3Disk
 
     protected function filesystemManager(): FilesystemManager
     {
-        return $this->getApplication()->make(FilesystemManager::class);
+        return $this->app->make(FilesystemManager::class);
     }
 }

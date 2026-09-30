@@ -6,19 +6,16 @@ namespace Velor\Images\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Velor\Images\Models\Image;
-use App\Models\AbstractModel;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Http\RedirectResponse;
 use Velor\Images\Resources\ImageResource;
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Velor\Images\Http\Requests\ImageStoreRequest;
 use Velor\Images\Http\Requests\ImageUpdateRequest;
 use Velor\Images\Services\Contracts\ImageOrderServiceInterface;
 use Velor\Images\Services\Contracts\ImageUploadServiceInterface;
 use App\Services\Resources\Contracts\ResourceIndexQueryInterface;
-use Velor\Images\Repositories\Contracts\ImageCategoryRepositoryInterface;
 
 class ImageController extends Controller
 {
@@ -27,7 +24,6 @@ class ImageController extends Controller
         protected ImageUploadServiceInterface $imageUploadService,
         protected ImageOrderServiceInterface $imageOrderService,
         protected ImageResource $imageResource,
-        protected ImageCategoryRepositoryInterface $imageCategoryRepository,
     ) {
         $this->authorizeResource(Image::class);
     }
@@ -37,14 +33,7 @@ class ImageController extends Controller
         return view('cms.layouts.index', [
             'pagination' => $this->resourceIndexQuery->paginate(
                 resource: $this->imageResource,
-                search: $request->string('search')->toString(),
-                filter: function (EloquentBuilder $query) use ($request): void {
-                    $this->applyCategoryFilter($query, $request);
-
-                    if (! $request->has('sort')) {
-                        $query->orderBy('sort_order');
-                    }
-                },
+                search: $request->string('search')->toString()
             ),
             'resource' => $this->imageResource,
         ]);
@@ -120,29 +109,5 @@ class ImageController extends Controller
         return redirect()
             ->route('images.index')
             ->with('status', 'Image deleted.');
-    }
-
-    /**
-     * @param EloquentBuilder<AbstractModel> $query
-     */
-    protected function applyCategoryFilter(EloquentBuilder $query, Request $request): void
-    {
-        $category = $request->query('image_category');
-
-        if ($category === 'common') {
-            $query->whereNull('image_category_id');
-
-            return;
-        }
-
-        if (! is_string($category) || $category === '') {
-            return;
-        }
-
-        if (! $this->imageCategoryRepository->exists($category)) {
-            return;
-        }
-
-        $query->where('image_category_id', $category);
     }
 }

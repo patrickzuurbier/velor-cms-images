@@ -6,6 +6,15 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+### Changed
+
+- Centralized image index filtering and image category persistence in the
+  package repositories.
+
+### Fixed
+
+- Updated the fake S3 test disk helper for the current Laravel test case API.
+
 ## [1.5.3] - 2026-09-21
 
 ### Fixed

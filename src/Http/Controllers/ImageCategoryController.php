@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Velor\Images\Http\Requests\ImageCategoryRequest;
 use Velor\Images\Models\ImageCategory;
 use Velor\Images\Resources\ImageCategoryResource;
+use Velor\Images\Repositories\Contracts\ImageCategoryRepositoryInterface;
 use Velor\Images\Services\Contracts\ImageOrderServiceInterface;
 use App\Services\Resources\Contracts\ResourceIndexQueryInterface;
 use Illuminate\Contracts\View\View;
@@ -20,6 +21,7 @@ class ImageCategoryController extends Controller
         protected ResourceIndexQueryInterface $resourceIndexQuery,
         protected ImageOrderServiceInterface $imageOrderService,
         protected ImageCategoryResource $imageCategoryResource,
+        protected ImageCategoryRepositoryInterface $imageCategoryRepository,
     ) {
         $this->authorizeResource(ImageCategory::class, 'image_category');
     }
@@ -44,7 +46,7 @@ class ImageCategoryController extends Controller
 
     public function store(ImageCategoryRequest $request): RedirectResponse
     {
-        $imageCategory = ImageCategory::create($request->validated());
+        $imageCategory = $this->imageCategoryRepository->create($request->validated());
 
         return redirect()
             ->route('image-categories.show', ['image_category' => $imageCategory->id])
@@ -67,7 +69,7 @@ class ImageCategoryController extends Controller
 
     public function update(ImageCategoryRequest $request, ImageCategory $imageCategory): RedirectResponse
     {
-        $imageCategory->update($request->validated());
+        $this->imageCategoryRepository->update($imageCategory, $request->validated());
 
         return redirect()
             ->route('image-categories.show', ['image_category' => $imageCategory->id])
@@ -76,11 +78,11 @@ class ImageCategoryController extends Controller
 
     public function destroy(ImageCategory $imageCategory): RedirectResponse
     {
-        foreach ($imageCategory->images()->orderBy('sort_order')->get() as $image) {
+        foreach ($this->imageCategoryRepository->orderedImages($imageCategory) as $image) {
             $this->imageOrderService->moveToCategory($image, null);
         }
 
-        $imageCategory->delete();
+        $this->imageCategoryRepository->delete($imageCategory);
 
         return redirect()
             ->route('image-categories.index')

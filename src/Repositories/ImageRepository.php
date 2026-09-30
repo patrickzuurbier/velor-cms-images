@@ -6,6 +6,8 @@ namespace Velor\Images\Repositories;
 
 use Closure;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Velor\Images\Models\Image;
 use Velor\Images\Repositories\Contracts\ImageRepositoryInterface;
 
@@ -18,6 +20,24 @@ class ImageRepository extends AbstractRepository implements ImageRepositoryInter
      * @var class-string<Image>
      */
     protected string $model = Image::class;
+
+    /**
+     * @return EloquentBuilder<Image>
+     */
+    public function indexQuery(?string $category): EloquentBuilder
+    {
+        $query = $this->query()->with('category');
+
+        if ($category === 'common') {
+            return $query->whereNull('image_category_id');
+        }
+
+        if ($category !== null) {
+            $query->where('image_category_id', $category);
+        }
+
+        return $query;
+    }
 
     /**
      * @return Collection<int, Image>
@@ -46,6 +66,10 @@ class ImageRepository extends AbstractRepository implements ImageRepositoryInter
         return $ids;
     }
 
+    /**
+     * @param int $chunkSize
+     * @param Closure(EloquentCollection<int, Image>): void $callback
+     */
     public function chunkForRegeneration(int $chunkSize, Closure $callback): void
     {
         $this->query()

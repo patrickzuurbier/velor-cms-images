@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Velor\Images\Resources;
 
 use App\Resources\AbstractResource;
+use App\Models\AbstractModel;
 use App\Data\View\ResourceRowOrderingData;
 use App\Resources\Fields\Field;
 use App\Resources\Fields\ImageFormats;
@@ -19,11 +20,13 @@ use App\Resources\Tabs\ResourceTab;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Velor\Images\Models\Image;
 use Velor\Images\Models\ImageCategory;
 use Velor\Images\Repositories\Contracts\ImageCategoryRepositoryInterface;
+use Velor\Images\Repositories\Contracts\ImageRepositoryInterface;
 use Velor\Images\Services\Contracts\ImageDisplayFormatResolverInterface;
 use Velor\Images\Services\Contracts\ImageFormatDataFactoryInterface;
 use Velor\Images\Services\Contracts\ImageUrlGeneratorInterface;
@@ -39,12 +42,25 @@ class ImageResource extends AbstractResource
         protected ImageDisplayFormatResolverInterface $imageDisplayFormatResolver,
         protected ImageFormatDataFactoryInterface $imageFormatDataFactory,
         protected ImageCategoryRepositoryInterface $imageCategoryRepository,
+        protected ImageRepositoryInterface $imageRepository,
+        protected Request $request,
     ) {
     }
 
     public function titleAttribute(): string
     {
         return 'name';
+    }
+
+    /**
+     * @return EloquentBuilder<AbstractModel>
+     */
+    public function indexQuery(?AbstractModel $parent = null, ?string $relationship = null): EloquentBuilder
+    {
+        /** @var EloquentBuilder<AbstractModel> $query */
+        $query = $this->imageRepository->indexQuery($this->selectedCategory());
+
+        return $query;
     }
 
     /**
@@ -171,6 +187,23 @@ class ImageResource extends AbstractResource
             contextKey: 'image_category_id',
             contextValue: $category === 'common' ? null : (string) $category,
         );
+    }
+
+    protected function selectedCategory(): ?string
+    {
+        $category = $this->request->query('image_category');
+
+        if ($category === 'common') {
+            return 'common';
+        }
+
+        if (! is_string($category) || $category === '') {
+            return null;
+        }
+
+        return $this->imageCategoryRepository->exists($category)
+            ? $category
+            : null;
     }
 
     /**

@@ -20,6 +20,35 @@ class ImageRepositoryTest extends AbstractDatabaseIntegrationTestCase
         $this->imageRepository = $this->app->make(ImageRepositoryInterface::class);
     }
 
+    public function test_it_builds_an_index_query_for_a_category(): void
+    {
+        $category = ImageCategory::factory()->create();
+        $categoryImage = Image::factory()->for($category, 'category')->create();
+        Image::factory()->create();
+
+        $images = $this->imageRepository
+            ->indexQuery((string) $category->getKey())
+            ->get();
+
+        $this->assertCount(1, $images);
+        $this->assertTrue($images->first()?->is($categoryImage));
+        $this->assertTrue($images->first()->relationLoaded('category'));
+    }
+
+    public function test_it_builds_an_index_query_for_common_images(): void
+    {
+        $category = ImageCategory::factory()->create();
+        $commonImage = Image::factory()->create();
+        Image::factory()->for($category, 'category')->create();
+
+        $images = $this->imageRepository
+            ->indexQuery('common')
+            ->get();
+
+        $this->assertCount(1, $images);
+        $this->assertTrue($images->first()?->is($commonImage));
+    }
+
     public function test_it_returns_images_ordered_for_picker(): void
     {
         Image::factory()->create(['name' => 'Zulu image']);
