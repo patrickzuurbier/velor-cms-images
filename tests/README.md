@@ -4,10 +4,12 @@ These tests belong to the Images package and should travel with the package
 repository. The Velor CMS core test suite must not depend on this package being
 installed.
 
-Package tests should cover:
+The `2.0.0` package tests should cover:
 
 - Service provider boot.
 - Resource, policy, CMS menu, and route registration.
-- Translation loading.
-- Model factories and database migrations.
-- Image upload, deletion, ordering, picker, and regeneration flows.
+- Translation, view, and asset loading.
+- Core image and usage management flows.
+- Unused-image upload and deletion.
+- Resource-usage tabs and usage editing.
+- Shared `ImageUpload` and rich text selection.

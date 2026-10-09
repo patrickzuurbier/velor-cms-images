@@ -8,12 +8,12 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ### Changed
 
-- Centralized image index filtering and image category persistence in the
-  package repositories.
-
-### Fixed
-
-- Updated the fake S3 test disk helper for the current Laravel test case API.
+- Started the breaking `2.0.0` rebuild against Velor CMS `^1.14`.
+- Removed package-owned image models, migrations, categories, repositories,
+  storage and format services, maintenance commands, routes, views, and legacy
+  tests now owned or replaced by Velor CMS core.
+- Reduced the package to an auto-discoverable service provider before rebuilding
+  the image management and selection layer on core images and usages.
 
 ## [1.5.3] - 2026-09-21
 
