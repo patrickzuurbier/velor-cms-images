@@ -13,6 +13,11 @@
             "Velor\\Images\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Velor\\Images\\Tests\\": "tests/"
+        }
+    },
     "extra": {
         "laravel": {
             "providers": [
