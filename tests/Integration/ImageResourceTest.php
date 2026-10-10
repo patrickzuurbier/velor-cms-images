@@ -6,13 +6,21 @@ namespace Velor\Images\Tests\Integration;
 
 use App\Models\Image;
 use App\Models\ImageUsage;
+use App\Resources\Fields\ImageFormats;
+use App\Resources\Fields\Field;
 use App\Resources\Tabs\ResourceTab;
+use App\Services\Images\Contracts\ImageUrlGeneratorInterface;
+use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
+use Tests\Concerns\UsesAuthorization;
 use Tests\Integration\AbstractDatabaseIntegrationTestCase;
 use Velor\Images\Resources\ImageResource;
 
 class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
 {
+    use UsesAuthorization;
+
     public function test_it_builds_tabs_from_actual_resource_types_with_unused_last(): void
     {
         $this->app->setLocale('en');
@@ -51,14 +59,126 @@ class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
         $this->assertSame([$unused->getKey()], $this->app->make(ImageResource::class)->indexQuery()->pluck('id')->all());
     }
 
+    public function test_it_shows_one_selected_generated_format_at_a_time(): void
+    {
+        $this->app->setLocale('en');
+
+        $image = Image::factory()->create([
+            'meta_data' => [
+                'formats' => [
+                    'full'      => ['extension' => 'webp', 'width' => 1920],
+                    'thumbnail' => ['extension' => 'webp', 'width' => 320],
+                ],
+            ],
+        ]);
+
+        $this->setRequest([], $image);
+
+        $resource = $this->app->make(ImageResource::class);
+        $formats = $this->resolvedFormats($resource, $image);
+        $tabs = $resource->tabs();
+
+        $this->assertSame(['full'], array_keys($formats));
+        $this->assertSame(['Unused', 'Full', 'Thumbnail'], array_map(
+            static fn (ResourceTab $tab): string => $tab->getLabel(),
+            $tabs,
+        ));
+        $this->assertTrue($tabs[1]->isActive(Request::create('/cms/images/' . $image->getKey())));
+
+        $this->setRequest(['format' => 'thumbnail'], $image);
+
+        $resource = $this->app->make(ImageResource::class);
+        $formats = $this->resolvedFormats($resource, $image);
+        $tabs = $resource->tabs();
+
+        $this->assertSame(['thumbnail'], array_keys($formats));
+        $this->assertTrue($tabs[2]->isActive(Request::create('/cms/images/' . $image->getKey(), 'GET', [
+            'format' => 'thumbnail',
+        ])));
+        $tabUrl = $tabs[2]->getUrl();
+
+        $this->assertInstanceOf(Closure::class, $tabUrl);
+        $this->assertSame(
+            route('images.show', ['image' => $image->getKey(), 'format' => 'thumbnail']),
+            $tabUrl($image),
+        );
+    }
+
+    public function test_the_detail_page_renders_only_the_selected_format_with_its_copyable_url(): void
+    {
+        $this->actingAsAdmin();
+
+        $image = Image::factory()->create([
+            'meta_data' => [
+                'formats' => [
+                    'full' => [
+                        'extension' => 'webp',
+                        'mime_type' => 'image/webp',
+                        'width'     => 1920,
+                        'height'    => 1080,
+                    ],
+                    'thumbnail' => [
+                        'extension' => 'webp',
+                        'mime_type' => 'image/webp',
+                        'width'     => 320,
+                        'height'    => 240,
+                    ],
+                ],
+            ],
+        ]);
+
+        $response = $this->get(route('images.show', [
+            'image'  => $image->getKey(),
+            'format' => 'thumbnail',
+        ]));
+
+        $urlGenerator = $this->app->make(ImageUrlGeneratorInterface::class);
+        $thumbnailUrl = $urlGenerator->format($image, 'thumbnail');
+        $fullUrl = $urlGenerator->format($image, 'full');
+
+        $response->assertOk();
+        $response->assertSee('data-copy-url="' . $thumbnailUrl . '"', false);
+        $response->assertDontSee('data-copy-url="' . $fullUrl . '"', false);
+
+        $content = $response->getContent();
+
+        $this->assertIsString($content);
+        $this->assertSame(1, substr_count($content, 'class="image-format-card"'));
+    }
+
     /**
      * @param array<string, string> $query
      */
-    protected function setRequest(array $query): void
+    protected function setRequest(array $query, ?Image $image = null): void
     {
         $request = Request::create('/cms/images', 'GET', $query);
 
+        if ($image instanceof Image) {
+            $route = new Route(['GET'], '/cms/images/{image}', []);
+            $route->bind($request);
+            $route->setParameter('image', $image);
+            $request->setRouteResolver(static fn (): Route => $route);
+        }
+
         $this->app->instance('request', $request);
         $this->app->instance(Request::class, $request);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function resolvedFormats(ImageResource $resource, Image $image): array
+    {
+        $field = collect($resource->fields())->first(
+            static fn (Field $field): bool => $field instanceof ImageFormats,
+        );
+
+        $this->assertInstanceOf(ImageFormats::class, $field);
+
+        $formats = $field->resolveValue($image, 'show');
+
+        $this->assertIsArray($formats);
+
+        return $formats;
     }
 }

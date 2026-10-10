@@ -11,6 +11,8 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 - Added one package-owned image picker for existing-image selection in core
   `ImageUpload` fields and rich text editors, including image search, generated
   format selection, contextual alt text, and translated controls.
+- Added one-at-a-time generated format previews with format metadata and
+  copyable URLs to image detail pages.
 - Declared package TypeScript and Sass entrypoints for automatic discovery by
   the Velor CMS Vite build.
 

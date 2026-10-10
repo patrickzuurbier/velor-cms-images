@@ -8,6 +8,7 @@ return [
         'plural'   => 'Images',
         'fields'   => [
             'filename'          => 'Filename',
+            'formats'           => 'Formats',
             'image'             => 'Image',
             'name'              => 'Name',
             'original_metadata' => 'Original metadata',

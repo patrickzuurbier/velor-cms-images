@@ -8,6 +8,7 @@ return [
         'plural'   => 'Afbeeldingen',
         'fields'   => [
             'filename'          => 'Bestandsnaam',
+            'formats'           => 'Formaten',
             'image'             => 'Afbeelding',
             'name'              => 'Naam',
             'original_metadata' => 'Originele metadata',

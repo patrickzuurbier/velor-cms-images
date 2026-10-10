@@ -16,12 +16,22 @@ use App\Services\Resources\Contracts\ResourceRegistryInterface;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
+use Velor\Images\Factories\Contracts\ImageFormatDataFactoryInterface;
+use Velor\Images\Factories\Contracts\ImageFormatPresentationFactoryInterface;
 use Velor\Images\Factories\Contracts\ImagePickerDataFactoryInterface;
+use Velor\Images\Factories\Contracts\ImageResourceIndexTabFactoryInterface;
+use Velor\Images\Factories\ImageFormatDataFactory;
+use Velor\Images\Factories\ImageFormatPresentationFactory;
 use Velor\Images\Factories\ImagePickerDataFactory;
+use Velor\Images\Factories\ImageResourceIndexTabFactory;
 use Velor\Images\Policies\ImagePolicy;
 use Velor\Images\Repositories\Contracts\ImageManagementRepositoryInterface;
 use Velor\Images\Repositories\ImageManagementRepository;
 use Velor\Images\Resources\ImageResource;
+use Velor\Images\Resolvers\Contracts\ImageResourceFieldValueResolverInterface;
+use Velor\Images\Resolvers\Contracts\ImageResourceScopeResolverInterface;
+use Velor\Images\Resolvers\ImageResourceFieldValueResolver;
+use Velor\Images\Resolvers\ImageResourceScopeResolver;
 use Velor\Images\Services\ImageResourceBulkDeleteService;
 
 class ImagesServiceProvider extends ServiceProvider
@@ -29,7 +39,15 @@ class ImagesServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(ImageManagementRepositoryInterface::class, ImageManagementRepository::class);
+        $this->app->singleton(ImageFormatDataFactoryInterface::class, ImageFormatDataFactory::class);
+        $this->app->singleton(ImageFormatPresentationFactoryInterface::class, ImageFormatPresentationFactory::class);
         $this->app->singleton(ImagePickerDataFactoryInterface::class, ImagePickerDataFactory::class);
+        $this->app->singleton(ImageResourceIndexTabFactoryInterface::class, ImageResourceIndexTabFactory::class);
+        $this->app->singleton(
+            ImageResourceFieldValueResolverInterface::class,
+            ImageResourceFieldValueResolver::class,
+        );
+        $this->app->singleton(ImageResourceScopeResolverInterface::class, ImageResourceScopeResolver::class);
         $this->app->extend(
             ResourceBulkDeleteServiceInterface::class,
             fn (ResourceBulkDeleteServiceInterface $service, Application $app): ResourceBulkDeleteServiceInterface => new ImageResourceBulkDeleteService(
