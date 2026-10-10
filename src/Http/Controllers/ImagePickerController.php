@@ -6,6 +6,7 @@ namespace Velor\Images\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Image;
+use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Http\JsonResponse;
 use Velor\Images\Factories\Contracts\ImagePickerDataFactoryInterface;
 
@@ -13,6 +14,7 @@ class ImagePickerController extends Controller
 {
     public function __construct(
         protected ImagePickerDataFactoryInterface $imagePickerDataFactory,
+        protected Translator $translator,
     ) {
     }
 
@@ -22,6 +24,17 @@ class ImagePickerController extends Controller
 
         return new JsonResponse([
             'images' => $this->imagePickerDataFactory->make(),
+            'labels' => [
+                'alt'        => $this->translator->get('velor-images::resources.images.picker.alt'),
+                'close'      => $this->translator->get('velor-images::resources.images.picker.close'),
+                'empty'      => $this->translator->get('velor-images::resources.images.picker.empty'),
+                'format'     => $this->translator->get('velor-images::resources.images.picker.format'),
+                'no_formats' => $this->translator->get('velor-images::resources.images.picker.no_formats'),
+                'open'       => $this->translator->get('velor-images::resources.images.picker.open'),
+                'search'     => $this->translator->get('velor-images::resources.images.picker.search'),
+                'select'     => $this->translator->get('velor-images::resources.images.picker.select'),
+                'title'      => $this->translator->get('velor-images::resources.images.picker.title'),
+            ],
         ]);
     }
 }

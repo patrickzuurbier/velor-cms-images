@@ -35,6 +35,8 @@ class ImagePickerTest extends AbstractDatabaseIntegrationTestCase
         $response->assertJsonPath('images.0.id', (string) $image->getKey());
         $response->assertJsonPath('images.0.name', 'Hero image');
         $response->assertJsonPath('images.0.filename', 'hero.jpg');
+        $response->assertJsonPath('labels.open', 'Select existing image');
+        $response->assertJsonPath('labels.select', 'Select image');
         $this->assertStringEndsWith(
             sprintf('/images/%s/cms.webp', $image->getKey()),
             (string) $response->json('images.0.preview_url'),

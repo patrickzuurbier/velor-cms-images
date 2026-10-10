@@ -6,9 +6,17 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+### Added
+
+- Added one package-owned image picker for existing-image selection in core
+  `ImageUpload` fields and rich text editors, including image search, generated
+  format selection, contextual alt text, and translated controls.
+- Declared package TypeScript and Sass entrypoints for automatic discovery by
+  the Velor CMS Vite build.
+
 ### Changed
 
-- Started the breaking `2.0.0` rebuild against Velor CMS `^1.14`.
+- Started the breaking `2.0.0` rebuild against Velor CMS `^1.15`.
 - Removed package-owned image models, migrations, categories, repositories,
   storage and format services, maintenance commands, routes, views, and legacy
   tests now owned or replaced by Velor CMS core.

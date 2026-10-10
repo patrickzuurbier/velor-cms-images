@@ -15,6 +15,17 @@ return [
         'tabs' => [
             'unused' => 'Ongebruikt',
         ],
+        'picker' => [
+            'alt'        => 'Alternatieve tekst',
+            'close'      => 'Sluiten',
+            'empty'      => 'Geen afbeeldingen gevonden.',
+            'format'     => 'Afbeeldingsformaat',
+            'no_formats' => 'Er zijn geen openbare afbeeldingsformaten beschikbaar.',
+            'open'       => 'Bestaande afbeelding selecteren',
+            'search'     => 'Afbeeldingen zoeken',
+            'select'     => 'Afbeelding selecteren',
+            'title'      => 'Afbeeldingenbibliotheek',
+        ],
         'messages' => [
             'deleted'  => 'Afbeelding verwijderd.',
             'updated'  => 'Afbeelding bijgewerkt.',
