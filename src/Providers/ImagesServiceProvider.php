@@ -16,6 +16,8 @@ use App\Services\Resources\Contracts\ResourceRegistryInterface;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
+use Velor\Images\Factories\Contracts\ImagePickerDataFactoryInterface;
+use Velor\Images\Factories\ImagePickerDataFactory;
 use Velor\Images\Policies\ImagePolicy;
 use Velor\Images\Repositories\Contracts\ImageManagementRepositoryInterface;
 use Velor\Images\Repositories\ImageManagementRepository;
@@ -27,6 +29,7 @@ class ImagesServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(ImageManagementRepositoryInterface::class, ImageManagementRepository::class);
+        $this->app->singleton(ImagePickerDataFactoryInterface::class, ImagePickerDataFactory::class);
         $this->app->extend(
             ResourceBulkDeleteServiceInterface::class,
             fn (ResourceBulkDeleteServiceInterface $service, Application $app): ResourceBulkDeleteServiceInterface => new ImageResourceBulkDeleteService(

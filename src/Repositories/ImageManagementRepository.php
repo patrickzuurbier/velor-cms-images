@@ -9,6 +9,7 @@ use App\Models\ImageUsage;
 use App\Repositories\AbstractRepository;
 use App\Repositories\Contracts\ImageRepositoryInterface;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Velor\Images\Repositories\Contracts\ImageManagementRepositoryInterface;
 
 /**
@@ -46,6 +47,15 @@ class ImageManagementRepository extends AbstractRepository implements ImageManag
         return $query->whereHas('usages', function (Builder $query) use ($resourceType): void {
             $query->where('resource_type', $resourceType);
         });
+    }
+
+    public function pickerImages(): Collection
+    {
+        return $this->query()
+            ->orderBy('name')
+            ->orderBy('filename')
+            ->orderBy('id')
+            ->get();
     }
 
     public function update(Image $image, array $attributes): Image

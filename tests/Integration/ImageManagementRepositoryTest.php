@@ -51,6 +51,18 @@ class ImageManagementRepositoryTest extends AbstractDatabaseIntegrationTestCase
         $this->assertFalse($this->imageManagementRepository->isUnused($used));
     }
 
+    public function test_picker_images_are_ordered_by_name_and_filename(): void
+    {
+        $second = Image::factory()->create(['name' => 'Beta', 'filename' => 'second.jpg']);
+        $first = Image::factory()->create(['name' => 'Alpha', 'filename' => 'first.jpg']);
+        $third = Image::factory()->create(['name' => 'Beta', 'filename' => 'third.jpg']);
+
+        $this->assertSame(
+            [$first->getKey(), $second->getKey(), $third->getKey()],
+            $this->imageManagementRepository->pickerImages()->modelKeys(),
+        );
+    }
+
     public function test_it_updates_only_the_editable_image_name(): void
     {
         $image = Image::factory()->create([

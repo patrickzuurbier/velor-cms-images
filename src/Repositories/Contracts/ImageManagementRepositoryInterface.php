@@ -6,6 +6,7 @@ namespace Velor\Images\Repositories\Contracts;
 
 use App\Models\Image;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 interface ImageManagementRepositoryInterface
 {
@@ -18,6 +19,11 @@ interface ImageManagementRepositoryInterface
      * @return Builder<Image>
      */
     public function indexQuery(?string $resourceType): Builder;
+
+    /**
+     * @return Collection<int, Image>
+     */
+    public function pickerImages(): Collection;
 
     /**
      * @param Image $image

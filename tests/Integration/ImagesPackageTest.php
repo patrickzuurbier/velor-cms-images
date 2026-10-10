@@ -53,6 +53,17 @@ class ImagesPackageTest extends AbstractIntegrationTestCase
         $this->assertContains('auth', $route->middleware());
     }
 
+    public function test_it_loads_the_image_picker_route_before_the_resource_show_route(): void
+    {
+        $this->app['router']->getRoutes()->refreshNameLookups();
+
+        $route = $this->app['router']->getRoutes()->getByName('images.picker');
+
+        $this->assertNotNull($route);
+        $this->assertSame('cms/images/picker', $route->uri());
+        $this->assertContains('auth', $route->middleware());
+    }
+
     public function test_it_loads_image_resource_translations_from_package_namespace(): void
     {
         $translator = $this->app->make(Translator::class);
