@@ -6,8 +6,12 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+## [2.0.0-rc.1] - 2026-10-10
+
 ### Added
 
+- Added an image management resource with usage-based resource tabs, an Unused
+  tab, uploads, name editing, and guarded single and bulk deletion.
 - Added one package-owned image picker for existing-image selection in core
   `ImageUpload` fields and rich text editors, including image search, generated
   format selection, contextual alt text, and translated controls.
@@ -18,7 +22,8 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ### Changed
 
-- Started the breaking `2.0.0` rebuild against Velor CMS `^1.15`.
+- Rebuilt the package against Velor CMS `^1.15` as an optional management and
+  selection layer on top of core images and usages.
 - Removed package-owned image models, migrations, categories, repositories,
   storage and format services, maintenance commands, routes, views, and legacy
   tests now owned or replaced by Velor CMS core.
@@ -133,7 +138,8 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 - Removed the unused legacy image category config; image categories are managed
   as database records.
 
-[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.5.3...HEAD
+[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.1...HEAD
+[2.0.0-rc.1]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.5.3...2.0.0-rc.1
 [1.5.3]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.5.2...1.5.3
 [1.5.2]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.5.1...1.5.2
 [1.5.1]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.5.0...1.5.1
