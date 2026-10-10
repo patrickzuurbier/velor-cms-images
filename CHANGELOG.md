@@ -6,6 +6,11 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed image index rendering by requiring the core image sorting support added
+  in Velor CMS `1.15.2`.
+
 ## [2.0.0-rc.1] - 2026-10-10
 
 ### Added

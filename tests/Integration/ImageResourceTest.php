@@ -21,6 +21,17 @@ class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
 {
     use UsesAuthorization;
 
+    public function test_the_image_index_page_renders(): void
+    {
+        $this->actingAsAdmin();
+
+        $image = Image::factory()->create(['name' => 'Library image']);
+
+        $this->get(route('images.index'))
+            ->assertOk()
+            ->assertSee($image->getAttribute('name'));
+    }
+
     public function test_it_builds_tabs_from_actual_resource_types_with_unused_last(): void
     {
         $this->app->setLocale('en');
