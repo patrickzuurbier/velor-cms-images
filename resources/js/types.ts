@@ -16,11 +16,18 @@ export type ImagePickerLabels = {
     search: string;
     select: string;
     title: string;
+    upload: string;
+    upload_failed: string;
+    uploading: string;
 };
 
 export type ImagePickerResponse = {
     images: ImagePickerImage[];
     labels: ImagePickerLabels;
+};
+
+export type ImagePickerUploadResponse = {
+    image: ImagePickerImage;
 };
 
 export type ImagePickerContext = 'image-upload' | 'rich-text';

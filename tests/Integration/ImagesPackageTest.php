@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Velor\Images\Tests\Integration;
 
 use App\Models\Image;
+use App\Resources\Fields\ImageUpload;
 use App\Services\Authorization\Contracts\PolicyRegistryInterface;
 use App\Services\CmsMenu\Contracts\CmsMenuItemRegistryInterface;
 use App\Services\CmsMenu\Data\CmsMenuItemData;
@@ -21,6 +22,15 @@ class ImagesPackageTest extends AbstractIntegrationTestCase
         $registry = $this->app->make(ResourceRegistryInterface::class);
 
         $this->assertInstanceOf(ImageResource::class, $registry->resourceFor(Image::class));
+    }
+
+    public function test_it_adds_image_picker_configuration_to_the_core_upload_field(): void
+    {
+        $this->assertTrue(ImageUpload::hasMacro('imagePicker'));
+
+        $field = ImageUpload::make('image')->imagePicker(false);
+
+        $this->assertFalse($field->allowsSelectionExtensions());
     }
 
     public function test_it_registers_the_image_policy_for_privileges(): void
@@ -62,6 +72,12 @@ class ImagesPackageTest extends AbstractIntegrationTestCase
         $this->assertNotNull($route);
         $this->assertSame('cms/images/picker', $route->uri());
         $this->assertContains('auth', $route->middleware());
+
+        $uploadRoute = $this->app['router']->getRoutes()->getByName('images.picker.upload');
+
+        $this->assertNotNull($uploadRoute);
+        $this->assertSame('cms/images/picker', $uploadRoute->uri());
+        $this->assertContains('POST', $uploadRoute->methods());
     }
 
     public function test_it_loads_image_resource_translations_from_package_namespace(): void

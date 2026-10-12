@@ -6,6 +6,7 @@ namespace Velor\Images\Providers;
 
 use App\Models\Image;
 use App\Repositories\Contracts\ImageRepositoryInterface;
+use App\Resources\Fields\ImageUpload;
 use App\Services\Authorization\Contracts\PolicyRegistryInterface;
 use App\Services\CmsMenu\Contracts\CmsMenuItemRegistryInterface;
 use App\Services\CmsMenu\Data\CmsMenuItemData;
@@ -38,6 +39,11 @@ class ImagesServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        ImageUpload::macro('imagePicker', function (bool $enabled = true): ImageUpload {
+            /** @var ImageUpload $this */
+            return $this->allowSelectionExtensions($enabled);
+        });
+
         $this->app->singleton(ImageManagementRepositoryInterface::class, ImageManagementRepository::class);
         $this->app->singleton(ImageFormatDataFactoryInterface::class, ImageFormatDataFactory::class);
         $this->app->singleton(ImageFormatPresentationFactoryInterface::class, ImageFormatPresentationFactory::class);

@@ -8,10 +8,9 @@ return [
         'plural'   => 'Images',
         'fields'   => [
             'filename'          => 'Filename',
-            'formats'           => 'Formats',
             'image'             => 'Image',
             'name'              => 'Name',
-            'original_metadata' => 'Original metadata',
+            'properties'        => 'Properties',
         ],
         'tabs' => [
             'unused' => 'Unused',
@@ -26,6 +25,9 @@ return [
             'search'     => 'Search images',
             'select'     => 'Select image',
             'title'      => 'Image library',
+            'upload'     => 'Upload new image',
+            'upload_failed' => 'The image could not be uploaded.',
+            'uploading'  => 'Uploading image…',
         ],
         'messages' => [
             'deleted'  => 'Image deleted.',

@@ -30,7 +30,13 @@ class ImageRequest extends AbstractFormRequest
      */
     public function rules(): array
     {
-        return $this->rulesFactory->make($this->imageResource);
+        $rules = $this->rulesFactory->make($this->imageResource);
+
+        if ($this->isMethod('POST')) {
+            $rules['upload.uploads'] = ['required', 'array', 'size:1'];
+        }
+
+        return $rules;
     }
 
     /**

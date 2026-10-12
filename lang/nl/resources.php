@@ -8,10 +8,9 @@ return [
         'plural'   => 'Afbeeldingen',
         'fields'   => [
             'filename'          => 'Bestandsnaam',
-            'formats'           => 'Formaten',
             'image'             => 'Afbeelding',
             'name'              => 'Naam',
-            'original_metadata' => 'Originele metadata',
+            'properties'        => 'Eigenschappen',
         ],
         'tabs' => [
             'unused' => 'Ongebruikt',
@@ -26,6 +25,9 @@ return [
             'search'     => 'Afbeeldingen zoeken',
             'select'     => 'Afbeelding selecteren',
             'title'      => 'Afbeeldingenbibliotheek',
+            'upload'     => 'Nieuwe afbeelding uploaden',
+            'upload_failed' => 'De afbeelding kon niet worden geüpload.',
+            'uploading'  => 'Afbeelding uploaden…',
         ],
         'messages' => [
             'deleted'  => 'Afbeelding verwijderd.',

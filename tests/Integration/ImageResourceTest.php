@@ -6,8 +6,11 @@ namespace Velor\Images\Tests\Integration;
 
 use App\Models\Image;
 use App\Models\ImageUsage;
-use App\Resources\Fields\ImageFormats;
+use App\Data\View\ImagePreviewData;
 use App\Resources\Fields\Field;
+use App\Resources\Fields\ImageMetaData;
+use App\Resources\Fields\ImagePreview;
+use App\Resources\Fields\ImageUpload;
 use App\Resources\Tabs\ResourceTab;
 use App\Services\Images\Contracts\ImageUrlGeneratorInterface;
 use Closure;
@@ -86,10 +89,12 @@ class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
         $this->setRequest([], $image);
 
         $resource = $this->app->make(ImageResource::class);
-        $formats = $this->resolvedFormats($resource, $image);
+        $preview = $this->resolvedPreview($resource, $image);
+        $properties = $this->resolvedProperties($resource, $image);
         $tabs = $resource->tabs();
 
-        $this->assertSame(['full'], array_keys($formats));
+        $this->assertStringEndsWith('/full.webp', $preview->url);
+        $this->assertSame(1920, $properties['width']);
         $this->assertSame(['Unused', 'Full', 'Thumbnail'], array_map(
             static fn (ResourceTab $tab): string => $tab->getLabel(),
             $tabs,
@@ -99,10 +104,12 @@ class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
         $this->setRequest(['format' => 'thumbnail'], $image);
 
         $resource = $this->app->make(ImageResource::class);
-        $formats = $this->resolvedFormats($resource, $image);
+        $preview = $this->resolvedPreview($resource, $image);
+        $properties = $this->resolvedProperties($resource, $image);
         $tabs = $resource->tabs();
 
-        $this->assertSame(['thumbnail'], array_keys($formats));
+        $this->assertStringEndsWith('/thumbnail.webp', $preview->url);
+        $this->assertSame(320, $properties['width']);
         $this->assertTrue($tabs[2]->isActive(Request::create('/cms/images/' . $image->getKey(), 'GET', [
             'format' => 'thumbnail',
         ])));
@@ -113,6 +120,32 @@ class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
             route('images.show', ['image' => $image->getKey(), 'format' => 'thumbnail']),
             $tabUrl($image),
         );
+    }
+
+    public function test_library_upload_does_not_allow_selecting_an_existing_image(): void
+    {
+        $field = collect($this->app->make(ImageResource::class)->fields())->first(
+            static fn (Field $field): bool => $field instanceof ImageUpload,
+        );
+
+        $this->assertInstanceOf(ImageUpload::class, $field);
+        $this->assertFalse($field->allowsSelectionExtensions());
+    }
+
+    public function test_library_upload_rejects_an_existing_image_selection(): void
+    {
+        $this->actingAsAdmin();
+
+        $image = Image::factory()->create();
+
+        $this->post(route('images.store'), [
+            'upload' => [
+                'present' => '1',
+                'order'   => ['existing:' . $image->getKey()],
+            ],
+        ])->assertSessionHasErrors('upload.uploads');
+
+        $this->assertSame(1, Image::query()->count());
     }
 
     public function test_the_detail_page_renders_only_the_selected_format_with_its_copyable_url(): void
@@ -150,11 +183,15 @@ class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
         $response->assertOk();
         $response->assertSee('data-copy-url="' . $thumbnailUrl . '"', false);
         $response->assertDontSee('data-copy-url="' . $fullUrl . '"', false);
+        $response->assertSee('Properties');
+        $response->assertSee('320 px');
+        $response->assertSee('240 px');
 
         $content = $response->getContent();
 
         $this->assertIsString($content);
-        $this->assertSame(1, substr_count($content, 'class="image-format-card"'));
+        $this->assertSame(1, substr_count($content, 'class="cms-image-preview"'));
+        $this->assertStringNotContainsString('image-format-card', $content);
     }
 
     /**
@@ -175,21 +212,36 @@ class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
         $this->app->instance(Request::class, $request);
     }
 
+    protected function resolvedPreview(ImageResource $resource, Image $image): ImagePreviewData
+    {
+        $field = collect($resource->fields())->first(
+            static fn (Field $field): bool => $field instanceof ImagePreview,
+        );
+
+        $this->assertInstanceOf(ImagePreview::class, $field);
+
+        $preview = $field->resolveValue($image, 'show');
+
+        $this->assertInstanceOf(ImagePreviewData::class, $preview);
+
+        return $preview;
+    }
+
     /**
      * @return array<string, mixed>
      */
-    protected function resolvedFormats(ImageResource $resource, Image $image): array
+    protected function resolvedProperties(ImageResource $resource, Image $image): array
     {
         $field = collect($resource->fields())->first(
-            static fn (Field $field): bool => $field instanceof ImageFormats,
+            static fn (Field $field): bool => $field instanceof ImageMetaData,
         );
 
-        $this->assertInstanceOf(ImageFormats::class, $field);
+        $this->assertInstanceOf(ImageMetaData::class, $field);
 
-        $formats = $field->resolveValue($image, 'show');
+        $properties = $field->resolveValue($image, 'show');
 
-        $this->assertIsArray($formats);
+        $this->assertIsArray($properties);
 
-        return $formats;
+        return $properties;
     }
 }

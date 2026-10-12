@@ -25,17 +25,22 @@ class ImagePickerDataFactory implements ImagePickerDataFactoryInterface
     {
         return $this->imageManagementRepository
             ->pickerImages()
-            ->map(fn (Image $image): array => [
-                'id'          => (string) $image->getKey(),
-                'name'        => $image->name,
-                'filename'    => $image->filename,
-                'preview_url' => $this->imageUrlGenerator->format(
-                    $image,
-                    $this->imageDisplayFormatResolver->cms($image),
-                ),
-                'formats' => $this->formats($image),
-            ])
+            ->map(fn (Image $image): array => $this->makeFor($image))
             ->all();
+    }
+
+    public function makeFor(Image $image): array
+    {
+        return [
+            'id'          => (string) $image->getKey(),
+            'name'        => $image->name,
+            'filename'    => $image->filename,
+            'preview_url' => $this->imageUrlGenerator->format(
+                $image,
+                $this->imageDisplayFormatResolver->cms($image),
+            ),
+            'formats' => $this->formats($image),
+        ];
     }
 
     /**

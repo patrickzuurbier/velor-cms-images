@@ -4,9 +4,11 @@ import type {
     ImagePickerLabels,
     ImagePickerResponse,
     ImagePickerSelection,
+    ImagePickerUploadResponse,
 } from './types';
 
 const endpoint = '/cms/images/picker';
+const uploadEndpoint = '/cms/images/picker';
 let pickerDataPromise: Promise<ImagePickerResponse> | null = null;
 
 export function preloadImagePicker(): Promise<ImagePickerResponse> {
@@ -59,6 +61,12 @@ class ImagePickerDialog {
 
     private readonly selectButton: HTMLButtonElement;
 
+    private readonly uploadInput: HTMLInputElement;
+
+    private readonly uploadLabel: HTMLElement;
+
+    private readonly uploadFeedback: HTMLElement;
+
     private readonly previouslyFocused: HTMLElement | null;
 
     private images: ImagePickerImage[] = [];
@@ -83,6 +91,9 @@ class ImagePickerDialog {
         this.altGroup = this.requiredElement('.velor-image-picker-alt-group');
         this.altInput = this.requiredElement<HTMLInputElement>('.velor-image-picker-alt');
         this.selectButton = this.requiredElement<HTMLButtonElement>('.velor-image-picker-select');
+        this.uploadInput = this.requiredElement<HTMLInputElement>('.velor-image-picker-upload-input');
+        this.uploadLabel = this.requiredElement('.velor-image-picker-upload-label');
+        this.uploadFeedback = this.requiredElement('.velor-image-picker-upload-feedback');
     }
 
     public choose(images: ImagePickerImage[]): Promise<ImagePickerSelection | null> {
@@ -112,7 +123,14 @@ class ImagePickerDialog {
             '<button type="button" class="btn-close velor-image-picker-close"></button>',
             '</div>',
             '<div class="modal-body">',
-            '<input type="search" class="form-control velor-image-picker-search mb-3">',
+            '<div class="velor-image-picker-tools mb-3">',
+            '<input type="search" class="form-control velor-image-picker-search">',
+            '<label class="btn btn-outline-primary velor-image-picker-upload-label">',
+            '<i class="bi bi-upload me-1"></i><span></span>',
+            '<input type="file" class="d-none velor-image-picker-upload-input" accept="image/*">',
+            '</label>',
+            '</div>',
+            '<p class="velor-image-picker-upload-feedback text-danger d-none"></p>',
             '<div class="velor-image-picker-grid"></div>',
             '<p class="velor-image-picker-empty text-body-secondary mb-0 d-none"></p>',
             '</div>',
@@ -138,6 +156,9 @@ class ImagePickerDialog {
         const formatLabel = this.requiredElementFrom(modal, '.velor-image-picker-format-group label');
         const altLabel = this.requiredElementFrom(modal, '.velor-image-picker-alt-group label');
         const select = this.requiredElementFrom<HTMLButtonElement>(modal, '.velor-image-picker-select');
+        const uploadInput = this.requiredElementFrom<HTMLInputElement>(modal, '.velor-image-picker-upload-input');
+        const uploadLabel = this.requiredElementFrom(modal, '.velor-image-picker-upload-label');
+        const uploadText = this.requiredElementFrom(modal, '.velor-image-picker-upload-label span');
 
         title.textContent = this.labels.title;
         search.placeholder = this.labels.search;
@@ -146,6 +167,8 @@ class ImagePickerDialog {
         formatLabel.textContent = this.labels.format;
         altLabel.textContent = this.labels.alt;
         select.textContent = this.labels.select;
+        uploadText.textContent = this.labels.upload;
+        uploadLabel.classList.toggle('d-none', this.context !== 'rich-text');
 
         modal.querySelectorAll<HTMLButtonElement>('.velor-image-picker-close').forEach(button => {
             button.setAttribute('aria-label', this.labels.close);
@@ -158,6 +181,13 @@ class ImagePickerDialog {
         });
         search.addEventListener('input', () => this.filterImages(search.value));
         select.addEventListener('click', () => this.confirm());
+        uploadInput.addEventListener('change', () => {
+            const file = uploadInput.files?.item(0);
+
+            if (file !== null && file !== undefined) {
+                void this.upload(file);
+            }
+        });
         modal.addEventListener('click', event => {
             if (event.target === modal) {
                 this.close(null);
@@ -170,6 +200,47 @@ class ImagePickerDialog {
         });
 
         return modal;
+    }
+
+    private async upload(file: File): Promise<void> {
+        const csrfToken = document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content;
+        const formData = new FormData();
+
+        formData.append('image', file);
+        this.uploadInput.disabled = true;
+        this.uploadLabel.classList.add('disabled');
+        this.uploadFeedback.textContent = this.labels.uploading;
+        this.uploadFeedback.classList.remove('d-none', 'text-danger');
+        this.uploadFeedback.classList.add('text-body-secondary');
+
+        try {
+            const response = await fetch(uploadEndpoint, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    ...(csrfToken === undefined ? {} : {'X-CSRF-TOKEN': csrfToken}),
+                },
+                body: formData,
+            });
+
+            if (! response.ok) {
+                throw new Error('Image upload failed with status ' + response.status + '.');
+            }
+
+            const data = await response.json() as ImagePickerUploadResponse;
+
+            this.images.unshift(data.image);
+            this.uploadFeedback.classList.add('d-none');
+            this.selectImage(data.image);
+        } catch {
+            this.uploadFeedback.textContent = this.labels.upload_failed;
+            this.uploadFeedback.classList.remove('d-none', 'text-body-secondary');
+            this.uploadFeedback.classList.add('text-danger');
+        } finally {
+            this.uploadInput.value = '';
+            this.uploadInput.disabled = false;
+            this.uploadLabel.classList.remove('disabled');
+        }
     }
 
     private filterImages(search: string): void {

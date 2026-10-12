@@ -25,15 +25,18 @@ class ImagePickerController extends Controller
         return new JsonResponse([
             'images' => $this->imagePickerDataFactory->make(),
             'labels' => [
-                'alt'        => $this->translator->get('velor-images::resources.images.picker.alt'),
-                'close'      => $this->translator->get('velor-images::resources.images.picker.close'),
-                'empty'      => $this->translator->get('velor-images::resources.images.picker.empty'),
-                'format'     => $this->translator->get('velor-images::resources.images.picker.format'),
-                'no_formats' => $this->translator->get('velor-images::resources.images.picker.no_formats'),
-                'open'       => $this->translator->get('velor-images::resources.images.picker.open'),
-                'search'     => $this->translator->get('velor-images::resources.images.picker.search'),
-                'select'     => $this->translator->get('velor-images::resources.images.picker.select'),
-                'title'      => $this->translator->get('velor-images::resources.images.picker.title'),
+                'alt'           => $this->translator->get('velor-images::resources.images.picker.alt'),
+                'close'         => $this->translator->get('velor-images::resources.images.picker.close'),
+                'empty'         => $this->translator->get('velor-images::resources.images.picker.empty'),
+                'format'        => $this->translator->get('velor-images::resources.images.picker.format'),
+                'no_formats'    => $this->translator->get('velor-images::resources.images.picker.no_formats'),
+                'open'          => $this->translator->get('velor-images::resources.images.picker.open'),
+                'search'        => $this->translator->get('velor-images::resources.images.picker.search'),
+                'select'        => $this->translator->get('velor-images::resources.images.picker.select'),
+                'title'         => $this->translator->get('velor-images::resources.images.picker.title'),
+                'upload'        => $this->translator->get('velor-images::resources.images.picker.upload'),
+                'upload_failed' => $this->translator->get('velor-images::resources.images.picker.upload_failed'),
+                'uploading'     => $this->translator->get('velor-images::resources.images.picker.uploading'),
             ],
         ]);
     }

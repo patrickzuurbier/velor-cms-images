@@ -19,12 +19,12 @@ class ImageFormatPresentationFactory implements ImageFormatPresentationFactoryIn
     ) {
     }
 
-    public function selected(Image $image, Request $request): array
+    public function selected(Image $image, Request $request): ?array
     {
         $formats = $this->imageFormatDataFactory->make($image);
         $key = $this->selectedKey($request, $formats);
 
-        return $key === null ? [] : [$key => $formats[$key]];
+        return $key === null ? null : $formats[$key];
     }
 
     public function tabs(Request $request): array

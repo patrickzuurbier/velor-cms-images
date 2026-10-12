@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 interface ImageFormatPresentationFactoryInterface
 {
     /**
-     * @return array<string, array{
+     * @return array{
      *     label: string,
      *     url: string,
      *     extension: string,
@@ -20,9 +20,9 @@ interface ImageFormatPresentationFactoryInterface
      *     size_label: string,
      *     width: int,
      *     height: int,
-     * }>
+     * }|null
      */
-    public function selected(Image $image, Request $request): array;
+    public function selected(Image $image, Request $request): ?array;
 
     /**
      * @return array<int, ResourceTab>

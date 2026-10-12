@@ -8,7 +8,6 @@ use App\Models\AbstractModel;
 use App\Models\Image;
 use App\Resources\AbstractResource;
 use App\Resources\Fields\Field;
-use App\Resources\Fields\ImageFormats;
 use App\Resources\Fields\ImageMetaData;
 use App\Resources\Fields\ImagePreview;
 use App\Resources\Fields\ImageUpload;
@@ -64,11 +63,16 @@ class ImageResource extends AbstractResource
             ImagePreview::make('preview')
                 ->label(__('velor-images::resources.images.fields.image'))
                 ->resolveValueUsing(
-                    fn (Model $model): ?string => $this->imageResourceFieldValueResolver->previewUrl($model),
+                    fn (Model $model, Field $_field, string $action): mixed => $this->imageResourceFieldValueResolver->preview(
+                        $model,
+                        $this->request,
+                        $action,
+                    ),
                 )
                 ->exceptOnForms(),
             ImageUpload::make('upload')
                 ->label(__('velor-images::resources.images.fields.image'))
+                ->imagePicker(false)
                 ->onlyOnCreate()
                 ->rules(['required']),
             Text::make('name')
@@ -82,18 +86,13 @@ class ImageResource extends AbstractResource
                 ->sortable()
                 ->searchable()
                 ->exceptOnForms(),
-            ImageMetaData::make('original_meta_data')
-                ->label(__('velor-images::resources.images.fields.original_metadata'))
+            ImageMetaData::make('properties')
+                ->label(__('velor-images::resources.images.fields.properties'))
                 ->resolveValueUsing(
-                    fn (Model $model): array => $this->imageResourceFieldValueResolver->originalMetaData($model),
-                )
-                ->onlyOnShow(),
-            ImageFormats::make('formats')
-                ->label(__('velor-images::resources.images.fields.formats'))
-                ->resolveValueUsing(
-                    fn (Model $model): array => $model instanceof Image
-                        ? $this->imageFormatPresentationFactory->selected($model, $this->request)
-                        : [],
+                    fn (Model $model): array => $this->imageResourceFieldValueResolver->properties(
+                        $model,
+                        $this->request,
+                    ),
                 )
                 ->onlyOnShow(),
         ];
