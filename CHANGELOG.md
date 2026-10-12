@@ -6,10 +6,28 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+## [2.0.0-rc.2] - 2026-10-12
+
+### Added
+
+- Added package-provided `imagePicker()` configuration to core `ImageUpload`
+  fields so existing-image selection can be disabled per field.
+- Added direct image uploads to the shared picker when it is opened from a rich
+  text editor.
+
+### Changed
+
+- Changed image detail pages to show one responsive preview for the selected
+  format with intrinsic dimensions, format properties, and a copyable URL.
+- Raised the minimum Velor CMS version to `^1.16` for the latest image field,
+  preview, format, and rich text usage integration.
+
 ### Fixed
 
 - Fixed image index rendering by requiring the core image sorting support added
   in Velor CMS `1.15.2`.
+- Limited the image library create form to new uploads instead of offering
+  selection of an image that is already stored.
 
 ## [2.0.0-rc.1] - 2026-10-10
 
@@ -143,7 +161,8 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 - Removed the unused legacy image category config; image categories are managed
   as database records.
 
-[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.1...HEAD
+[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.2...HEAD
+[2.0.0-rc.2]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.1...2.0.0-rc.2
 [2.0.0-rc.1]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.5.3...2.0.0-rc.1
 [1.5.3]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.5.2...1.5.3
 [1.5.2]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.5.1...1.5.2
