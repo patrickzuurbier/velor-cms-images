@@ -6,7 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "velor/cms": "^1.16"
+        "velor/cms": "^1.17"
     },
     "autoload": {
         "psr-4": {

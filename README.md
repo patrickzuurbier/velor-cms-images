@@ -4,7 +4,7 @@ Velor CMS Images is the optional image management and selection layer for
 Velor CMS. Velor CMS core owns image records, usages, uploads, storage,
 generated formats, recovery, and regeneration.
 
-The `2.0` release line requires Velor CMS `^1.16`. It browses and manages core
+The `2.0` release line requires Velor CMS `^1.17`. It browses and manages core
 images and usages, exposes image selection for `ImageUpload`, and
 groups images by their actual resource usages. It does not define its own image
 models, storage services, migrations, categories, or maintenance commands.
