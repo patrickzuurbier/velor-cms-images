@@ -73,6 +73,7 @@ class ImageResource extends AbstractResource
             ImageUpload::make('upload')
                 ->label(__('velor-images::resources.images.fields.image'))
                 ->imagePicker(false)
+                ->withoutUsageContext()
                 ->onlyOnCreate()
                 ->rules(['required']),
             Text::make('name')

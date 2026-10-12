@@ -130,6 +130,7 @@ class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
 
         $this->assertInstanceOf(ImageUpload::class, $field);
         $this->assertFalse($field->allowsSelectionExtensions());
+        $this->assertFalse($field->collectsUsageContext());
     }
 
     public function test_library_upload_rejects_an_existing_image_selection(): void
