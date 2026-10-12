@@ -3,7 +3,6 @@ import { openImagePicker, preloadImagePicker } from './imagePicker';
 type ExistingImageSelection = {
     id: string;
     name: string;
-    alt: string;
     url: string;
 };
 
@@ -44,10 +43,9 @@ async function attachPickerButton(dropzone: HTMLElement, detail: ImageUploadRead
         button.innerHTML = '<i class="bi bi-images me-1"></i>';
         button.append(data.labels.open);
         button.addEventListener('click', async () => {
-            await openImagePicker('image-upload', selection => detail.select({
+            await openImagePicker(selection => detail.select({
                 id: selection.image.id,
                 name: selection.image.name,
-                alt: selection.alt,
                 url: selection.url,
             })).catch(() => null);
         });

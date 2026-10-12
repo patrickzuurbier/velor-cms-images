@@ -7,7 +7,6 @@ namespace Velor\Images\Factories;
 use App\Models\Image;
 use App\Services\Images\Contracts\ImageUrlGeneratorInterface;
 use App\Services\Images\Resolvers\ImageDisplayFormatResolver;
-use Velor\Images\Factories\Contracts\ImageFormatDataFactoryInterface;
 use Velor\Images\Factories\Contracts\ImagePickerDataFactoryInterface;
 use Velor\Images\Repositories\Contracts\ImageManagementRepositoryInterface;
 
@@ -17,7 +16,6 @@ class ImagePickerDataFactory implements ImagePickerDataFactoryInterface
         protected ImageManagementRepositoryInterface $imageManagementRepository,
         protected ImageUrlGeneratorInterface $imageUrlGenerator,
         protected ImageDisplayFormatResolver $imageDisplayFormatResolver,
-        protected ImageFormatDataFactoryInterface $imageFormatDataFactory,
     ) {
     }
 
@@ -29,7 +27,7 @@ class ImagePickerDataFactory implements ImagePickerDataFactoryInterface
             ->all();
     }
 
-    public function makeFor(Image $image): array
+    protected function makeFor(Image $image): array
     {
         return [
             'id'          => (string) $image->getKey(),
@@ -39,25 +37,6 @@ class ImagePickerDataFactory implements ImagePickerDataFactoryInterface
                 $image,
                 $this->imageDisplayFormatResolver->cms($image),
             ),
-            'formats' => $this->formats($image),
         ];
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    protected function formats(Image $image): array
-    {
-        $urls = [];
-
-        foreach ($this->imageFormatDataFactory->make($image) as $format => $data) {
-            if ($format === 'cms') {
-                continue;
-            }
-
-            $urls[$format] = $data['url'];
-        }
-
-        return $urls;
     }
 }

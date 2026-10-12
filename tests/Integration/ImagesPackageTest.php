@@ -72,12 +72,6 @@ class ImagesPackageTest extends AbstractIntegrationTestCase
         $this->assertNotNull($route);
         $this->assertSame('cms/images/picker', $route->uri());
         $this->assertContains('auth', $route->middleware());
-
-        $uploadRoute = $this->app['router']->getRoutes()->getByName('images.picker.upload');
-
-        $this->assertNotNull($uploadRoute);
-        $this->assertSame('cms/images/picker', $uploadRoute->uri());
-        $this->assertContains('POST', $uploadRoute->methods());
     }
 
     public function test_it_loads_image_resource_translations_from_package_namespace(): void

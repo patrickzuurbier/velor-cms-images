@@ -3,22 +3,15 @@ export type ImagePickerImage = {
     name: string;
     filename: string;
     preview_url: string;
-    formats: Record<string, string>;
 };
 
 export type ImagePickerLabels = {
-    alt: string;
     close: string;
     empty: string;
-    format: string;
-    no_formats: string;
     open: string;
     search: string;
     select: string;
     title: string;
-    upload: string;
-    upload_failed: string;
-    uploading: string;
 };
 
 export type ImagePickerResponse = {
@@ -26,15 +19,7 @@ export type ImagePickerResponse = {
     labels: ImagePickerLabels;
 };
 
-export type ImagePickerUploadResponse = {
-    image: ImagePickerImage;
-};
-
-export type ImagePickerContext = 'image-upload' | 'rich-text';
-
 export type ImagePickerSelection = {
     image: ImagePickerImage;
-    alt: string;
-    format: string | null;
     url: string;
 };

@@ -12,4 +12,4 @@ The `2.0.0` package tests should cover:
 - Core image and usage management flows.
 - Unused-image upload and deletion.
 - Resource-usage tabs and usage editing.
-- Shared `ImageUpload` and rich text selection.
+- Core `ImageUpload` image selection.
