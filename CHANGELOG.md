@@ -6,6 +6,19 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+### Changed
+
+- Limited the package picker to selecting existing images for core
+  `ImageUpload` fields and removed its former rich text and direct-upload
+  integration.
+- Changed picker cards to use the core `preview` format and image index rows to
+  use `thumbnail`.
+- Hid the internal `preview` and `thumbnail` formats from image detail tabs
+  while retaining responsive selected-format previews, properties, and URL
+  copying.
+- Raised the minimum Velor CMS version to `^1.17` for contextual image metadata,
+  resource usage cleanup, and the revised display formats.
+
 ## [2.0.0-rc.2] - 2026-10-12
 
 ### Added
