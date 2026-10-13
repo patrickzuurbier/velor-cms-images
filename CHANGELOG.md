@@ -6,6 +6,8 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+## [2.0.0-rc.3] - 2026-10-13
+
 ### Changed
 
 - Limited the package picker to selecting existing images for core
@@ -174,7 +176,8 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 - Removed the unused legacy image category config; image categories are managed
   as database records.
 
-[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.2...HEAD
+[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.3...HEAD
+[2.0.0-rc.3]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.2...2.0.0-rc.3
 [2.0.0-rc.2]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.1...2.0.0-rc.2
 [2.0.0-rc.1]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.5.3...2.0.0-rc.1
 [1.5.3]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.5.2...1.5.3
