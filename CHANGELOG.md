@@ -20,6 +20,7 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
   copying.
 - Raised the minimum Velor CMS version to `^1.17` for contextual image metadata,
   resource usage cleanup, and the revised display formats.
+- Raised the minimum PHP version to `8.4.1` to match Velor CMS core.
 
 ## [2.0.0-rc.2] - 2026-10-12
 
