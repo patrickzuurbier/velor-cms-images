@@ -6,6 +6,12 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+## [2.0.0-rc.4] - 2026-10-13
+
+### Changed
+
+- Raised the minimum PHP version to `8.4.1` to match Velor CMS core.
+
 ## [2.0.0-rc.3] - 2026-10-13
 
 ### Changed
@@ -20,7 +26,6 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
   copying.
 - Raised the minimum Velor CMS version to `^1.17` for contextual image metadata,
   resource usage cleanup, and the revised display formats.
-- Raised the minimum PHP version to `8.4.1` to match Velor CMS core.
 
 ## [2.0.0-rc.2] - 2026-10-12
 
@@ -177,7 +182,8 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 - Removed the unused legacy image category config; image categories are managed
   as database records.
 
-[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.3...HEAD
+[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.4...HEAD
+[2.0.0-rc.4]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.3...2.0.0-rc.4
 [2.0.0-rc.3]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.2...2.0.0-rc.3
 [2.0.0-rc.2]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.1...2.0.0-rc.2
 [2.0.0-rc.1]: https://github.com/patrickzuurbier/velor-cms-images/compare/1.5.3...2.0.0-rc.1
