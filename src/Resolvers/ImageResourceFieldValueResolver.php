@@ -31,7 +31,7 @@ class ImageResourceFieldValueResolver implements ImageResourceFieldValueResolver
         if ($action === 'index') {
             return new ImagePreviewData($this->imageUrlGenerator->format(
                 $model,
-                $this->imageDisplayFormatResolver->cms($model),
+                $this->imageDisplayFormatResolver->thumbnail($model),
             ));
         }
 

@@ -27,6 +27,14 @@ class ImagePickerDataFactory implements ImagePickerDataFactoryInterface
             ->all();
     }
 
+    /**
+     * @return array{
+     *     id: string,
+     *     name: string,
+     *     filename: string,
+     *     preview_url: string,
+     * }
+     */
     protected function makeFor(Image $image): array
     {
         return [
@@ -35,7 +43,7 @@ class ImagePickerDataFactory implements ImagePickerDataFactoryInterface
             'filename'    => $image->filename,
             'preview_url' => $this->imageUrlGenerator->format(
                 $image,
-                $this->imageDisplayFormatResolver->cms($image),
+                $this->imageDisplayFormatResolver->preview($image),
             ),
         ];
     }

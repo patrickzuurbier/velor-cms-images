@@ -22,6 +22,16 @@ class ImageFormatDataFactoryTest extends AbstractDatabaseIntegrationTestCase
                         'width'     => 1920,
                         'height'    => 1080,
                     ],
+                    'preview' => [
+                        'extension' => 'webp',
+                        'width'     => 320,
+                        'height'    => 240,
+                    ],
+                    'thumbnail' => [
+                        'extension' => 'webp',
+                        'width'     => 150,
+                        'height'    => 150,
+                    ],
                 ],
             ],
         ]);

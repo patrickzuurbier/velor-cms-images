@@ -11,6 +11,8 @@ use Velor\Images\Factories\Contracts\ImageFormatDataFactoryInterface;
 
 class ImageFormatDataFactory implements ImageFormatDataFactoryInterface
 {
+    protected const HIDDEN_FORMATS = ['preview', 'thumbnail'];
+
     public function __construct(
         protected ImageUrlGeneratorInterface $imageUrlGenerator,
     ) {
@@ -27,7 +29,7 @@ class ImageFormatDataFactory implements ImageFormatDataFactoryInterface
         $formats = [];
 
         foreach ($generatedFormats as $key => $metaData) {
-            if (! is_string($key) || ! is_array($metaData)) {
+            if (! is_string($key) || ! is_array($metaData) || in_array($key, self::HIDDEN_FORMATS, true)) {
                 continue;
             }
 

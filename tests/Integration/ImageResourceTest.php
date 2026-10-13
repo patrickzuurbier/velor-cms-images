@@ -81,7 +81,9 @@ class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
             'meta_data' => [
                 'formats' => [
                     'full'      => ['extension' => 'webp', 'width' => 1920],
-                    'thumbnail' => ['extension' => 'webp', 'width' => 320],
+                    'half'      => ['extension' => 'webp', 'width' => 960],
+                    'preview'   => ['extension' => 'webp', 'width' => 320],
+                    'thumbnail' => ['extension' => 'webp', 'width' => 150],
                 ],
             ],
         ]);
@@ -92,32 +94,34 @@ class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
         $preview = $this->resolvedPreview($resource, $image);
         $properties = $this->resolvedProperties($resource, $image);
         $tabs = $resource->tabs();
+        $indexPreview = $this->resolvedPreview($resource, $image, 'index');
 
         $this->assertStringEndsWith('/full.webp', $preview->url);
+        $this->assertStringEndsWith('/thumbnail.webp', $indexPreview->url);
         $this->assertSame(1920, $properties['width']);
-        $this->assertSame(['Unused', 'Full', 'Thumbnail'], array_map(
+        $this->assertSame(['Unused', 'Full', 'Half'], array_map(
             static fn (ResourceTab $tab): string => $tab->getLabel(),
             $tabs,
         ));
         $this->assertTrue($tabs[1]->isActive(Request::create('/cms/images/' . $image->getKey())));
 
-        $this->setRequest(['format' => 'thumbnail'], $image);
+        $this->setRequest(['format' => 'half'], $image);
 
         $resource = $this->app->make(ImageResource::class);
         $preview = $this->resolvedPreview($resource, $image);
         $properties = $this->resolvedProperties($resource, $image);
         $tabs = $resource->tabs();
 
-        $this->assertStringEndsWith('/thumbnail.webp', $preview->url);
-        $this->assertSame(320, $properties['width']);
+        $this->assertStringEndsWith('/half.webp', $preview->url);
+        $this->assertSame(960, $properties['width']);
         $this->assertTrue($tabs[2]->isActive(Request::create('/cms/images/' . $image->getKey(), 'GET', [
-            'format' => 'thumbnail',
+            'format' => 'half',
         ])));
         $tabUrl = $tabs[2]->getUrl();
 
         $this->assertInstanceOf(Closure::class, $tabUrl);
         $this->assertSame(
-            route('images.show', ['image' => $image->getKey(), 'format' => 'thumbnail']),
+            route('images.show', ['image' => $image->getKey(), 'format' => 'half']),
             $tabUrl($image),
         );
     }
@@ -162,11 +166,23 @@ class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
                         'width'     => 1920,
                         'height'    => 1080,
                     ],
-                    'thumbnail' => [
+                    'half' => [
+                        'extension' => 'webp',
+                        'mime_type' => 'image/webp',
+                        'width'     => 960,
+                        'height'    => 540,
+                    ],
+                    'preview' => [
                         'extension' => 'webp',
                         'mime_type' => 'image/webp',
                         'width'     => 320,
                         'height'    => 240,
+                    ],
+                    'thumbnail' => [
+                        'extension' => 'webp',
+                        'mime_type' => 'image/webp',
+                        'width'     => 150,
+                        'height'    => 150,
                     ],
                 ],
             ],
@@ -174,19 +190,23 @@ class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
 
         $response = $this->get(route('images.show', [
             'image'  => $image->getKey(),
-            'format' => 'thumbnail',
+            'format' => 'half',
         ]));
 
         $urlGenerator = $this->app->make(ImageUrlGeneratorInterface::class);
-        $thumbnailUrl = $urlGenerator->format($image, 'thumbnail');
+        $halfUrl = $urlGenerator->format($image, 'half');
         $fullUrl = $urlGenerator->format($image, 'full');
+        $previewUrl = $urlGenerator->format($image, 'preview');
+        $thumbnailUrl = $urlGenerator->format($image, 'thumbnail');
 
         $response->assertOk();
-        $response->assertSee('data-copy-url="' . $thumbnailUrl . '"', false);
+        $response->assertSee('data-copy-url="' . $halfUrl . '"', false);
         $response->assertDontSee('data-copy-url="' . $fullUrl . '"', false);
+        $response->assertDontSee($previewUrl, false);
+        $response->assertDontSee($thumbnailUrl, false);
         $response->assertSee('Properties');
-        $response->assertSee('320 px');
-        $response->assertSee('240 px');
+        $response->assertSee('960 px');
+        $response->assertSee('540 px');
 
         $content = $response->getContent();
 
@@ -213,15 +233,18 @@ class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
         $this->app->instance(Request::class, $request);
     }
 
-    protected function resolvedPreview(ImageResource $resource, Image $image): ImagePreviewData
-    {
+    protected function resolvedPreview(
+        ImageResource $resource,
+        Image $image,
+        string $action = 'show',
+    ): ImagePreviewData {
         $field = collect($resource->fields())->first(
             static fn (Field $field): bool => $field instanceof ImagePreview,
         );
 
         $this->assertInstanceOf(ImagePreview::class, $field);
 
-        $preview = $field->resolveValue($image, 'show');
+        $preview = $field->resolveValue($image, $action);
 
         $this->assertInstanceOf(ImagePreviewData::class, $preview);
 

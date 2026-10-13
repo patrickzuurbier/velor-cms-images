@@ -22,9 +22,9 @@ class ImagePickerTest extends AbstractDatabaseIntegrationTestCase
             'meta_data' => [
                 'original' => ['extension' => 'jpg'],
                 'formats'  => [
-                    'full' => ['width' => 1920],
-                    'half' => ['width' => 960],
-                    'cms'  => ['width' => 960],
+                    'full'    => ['width' => 1920],
+                    'half'    => ['width' => 960],
+                    'preview' => ['width' => 320],
                 ],
             ],
         ]);
@@ -38,7 +38,7 @@ class ImagePickerTest extends AbstractDatabaseIntegrationTestCase
         $response->assertJsonPath('labels.open', 'Select existing image');
         $response->assertJsonPath('labels.select', 'Select image');
         $this->assertStringEndsWith(
-            sprintf('/images/%s/cms.jpg', $image->getKey()),
+            sprintf('/images/%s/preview.jpg', $image->getKey()),
             (string) $response->json('images.0.preview_url'),
         );
         $response->assertJsonMissingPath('images.0.formats');
