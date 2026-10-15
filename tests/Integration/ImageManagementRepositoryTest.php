@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Velor\Images\Tests\Integration;
 
+use App\Enums\ImageProcessingStatusEnum;
 use App\Models\Image;
 use App\Models\ImageUsage;
 use Tests\Integration\AbstractDatabaseIntegrationTestCase;
@@ -59,6 +60,24 @@ class ImageManagementRepositoryTest extends AbstractDatabaseIntegrationTestCase
 
         $this->assertSame(
             [$first->getKey(), $second->getKey(), $third->getKey()],
+            $this->imageManagementRepository->pickerImages()->modelKeys(),
+        );
+    }
+
+    public function test_picker_images_only_include_completed_images(): void
+    {
+        $completed = Image::factory()->create([
+            'processing_status' => ImageProcessingStatusEnum::COMPLETED,
+        ]);
+        Image::factory()->create([
+            'processing_status' => ImageProcessingStatusEnum::PENDING,
+        ]);
+        Image::factory()->create([
+            'processing_status' => ImageProcessingStatusEnum::PROCESSING,
+        ]);
+
+        $this->assertSame(
+            [$completed->getKey()],
             $this->imageManagementRepository->pickerImages()->modelKeys(),
         );
     }

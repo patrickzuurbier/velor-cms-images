@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Velor\Images\Repositories;
 
+use App\Enums\ImageProcessingStatusEnum;
 use App\Models\Image;
 use App\Models\ImageUsage;
 use App\Repositories\AbstractRepository;
@@ -52,6 +53,7 @@ class ImageManagementRepository extends AbstractRepository implements ImageManag
     public function pickerImages(): Collection
     {
         return $this->query()
+            ->where('processing_status', ImageProcessingStatusEnum::COMPLETED)
             ->orderBy('name')
             ->orderBy('filename')
             ->orderBy('id')

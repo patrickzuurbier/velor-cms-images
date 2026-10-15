@@ -9,6 +9,7 @@ use App\Models\Image;
 use App\Services\Images\Contracts\ImageUploadServiceInterface;
 use App\Services\Resources\Contracts\ResourceIndexQueryInterface;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -46,9 +47,18 @@ class ImageController extends Controller
         ]);
     }
 
-    public function store(ImageRequest $request): RedirectResponse
+    public function store(ImageRequest $request): RedirectResponse|JsonResponse
     {
         $image = $this->imageUploadService->upload($this->uploadedFile($request));
+
+        if ($request->expectsJson()) {
+            return new JsonResponse([
+                'image' => [
+                    'id'                => (string) $image->getKey(),
+                    'processing_status' => $image->processing_status->value,
+                ],
+            ], JsonResponse::HTTP_CREATED);
+        }
 
         return redirect()
             ->route('images.show', ['image' => $image->getKey()])

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Velor\Images\Tests\Integration;
 
+use App\Enums\ImageProcessingStatusEnum;
+use App\Jobs\Images\GenerateImageFormatsJob;
 use App\Models\Image;
 use App\Models\ImageUsage;
 use App\Data\View\ImagePreviewData;
@@ -14,6 +16,8 @@ use App\Resources\Fields\ImageUpload;
 use App\Resources\Tabs\ResourceTab;
 use App\Services\Images\Contracts\ImageUrlGeneratorInterface;
 use Closure;
+use Illuminate\Contracts\Bus\Dispatcher;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 use Tests\Concerns\UsesAuthorization;
@@ -151,6 +155,83 @@ class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
         ])->assertSessionHasErrors('upload.uploads');
 
         $this->assertSame(1, Image::query()->count());
+    }
+
+    public function test_library_upload_returns_the_pending_image_for_json_requests(): void
+    {
+        $this->actingAsAdmin();
+
+        $dispatcher = $this->createMock(Dispatcher::class);
+        $dispatcher
+            ->expects($this->once())
+            ->method('dispatch')
+            ->with($this->callback(static fn (mixed $job): bool => $job instanceof GenerateImageFormatsJob))
+            ->willReturnArgument(0);
+        $this->app->instance(Dispatcher::class, $dispatcher);
+
+        $response = $this->postJson(route('images.store'), [
+            'upload' => [
+                'present' => '1',
+                'order'   => ['upload:0'],
+                'uploads' => [UploadedFile::fake()->image('library-image.jpg')],
+            ],
+        ]);
+
+        $image = Image::query()->sole();
+
+        $response->assertCreated();
+        $response->assertJsonPath('image.id', (string) $image->getKey());
+        $response->assertJsonPath('image.processing_status', ImageProcessingStatusEnum::PENDING->value);
+    }
+
+    public function test_processing_statuses_include_transient_failures_for_missing_images(): void
+    {
+        $this->actingAsAdmin();
+
+        $pending = Image::factory()->create([
+            'processing_status' => ImageProcessingStatusEnum::PENDING,
+        ]);
+        $completed = Image::factory()->create([
+            'processing_status' => ImageProcessingStatusEnum::COMPLETED,
+        ]);
+        $missingImageId = fake()->uuid();
+
+        $this->postJson(route('images.processing-statuses'), [
+            'ids' => [$pending->getKey(), $missingImageId, $completed->getKey()],
+        ])
+            ->assertOk()
+            ->assertExactJson([
+                'images' => [
+                    [
+                        'id'                => (string) $pending->getKey(),
+                        'processing_status' => ImageProcessingStatusEnum::PENDING->value,
+                    ],
+                    [
+                        'id'                => $missingImageId,
+                        'processing_status' => 'failed',
+                    ],
+                    [
+                        'id'                => (string) $completed->getKey(),
+                        'processing_status' => ImageProcessingStatusEnum::COMPLETED->value,
+                    ],
+                ],
+            ]);
+    }
+
+    public function test_processing_statuses_accept_more_than_one_hundred_image_ids(): void
+    {
+        $this->actingAsAdmin();
+
+        $imageIds = array_map(
+            static fn (): string => fake()->uuid(),
+            range(1, 101),
+        );
+
+        $this->postJson(route('images.processing-statuses'), [
+            'ids' => $imageIds,
+        ])
+            ->assertOk()
+            ->assertJsonCount(101, 'images');
     }
 
     public function test_the_detail_page_renders_only_the_selected_format_with_its_copyable_url(): void
