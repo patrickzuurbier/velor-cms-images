@@ -157,7 +157,9 @@ class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
             ->assertOk()
             ->assertViewIs('velor-images::images.create')
             ->assertSee('class="velor-image-library-upload"', false)
-            ->assertSee('multiple', false);
+            ->assertSee('multiple', false)
+            ->assertSee('Upload progress')
+            ->assertSee('data-status-uploading="Uploading"', false);
     }
 
     public function test_library_upload_rejects_an_existing_image_selection(): void

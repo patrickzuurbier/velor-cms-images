@@ -94,6 +94,10 @@ class ImagesPackageTest extends AbstractIntegrationTestCase
 
         $this->assertSame('Images', $translator->get('velor-images::resources.images.plural'));
         $this->assertSame('Unused', $translator->get('velor-images::resources.images.tabs.unused'));
+        $this->assertSame(
+            ':completed of :total images uploaded',
+            $translator->get('velor-images::resources.images.upload.progress'),
+        );
 
         $translator->setLocale('nl');
 
