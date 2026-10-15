@@ -42,7 +42,7 @@ class ImageController extends Controller
 
     public function create(): View
     {
-        return view('cms.layouts.form', [
+        return view('velor-images::images.create', [
             'resource' => $this->imageResource,
         ]);
     }

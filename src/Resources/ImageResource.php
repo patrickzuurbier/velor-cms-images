@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Velor\Images\Resources;
 
+use App\Enums\ButtonTypeEnum;
+use App\Enums\ResourceViewEnum;
 use App\Models\AbstractModel;
 use App\Models\Image;
 use App\Resources\AbstractResource;
@@ -73,6 +75,7 @@ class ImageResource extends AbstractResource
             ImageUpload::make('upload')
                 ->label(__('velor-images::resources.images.fields.image'))
                 ->imagePicker(false)
+                ->multiple()
                 ->withoutUsageContext()
                 ->onlyOnCreate()
                 ->rules(['required']),
@@ -97,6 +100,18 @@ class ImageResource extends AbstractResource
                 )
                 ->onlyOnShow(),
         ];
+    }
+
+    /**
+     * @return array<int, ButtonTypeEnum>
+     */
+    public function buttonsFor(ResourceViewEnum $view): array
+    {
+        if ($view === ResourceViewEnum::INDEX) {
+            return [ButtonTypeEnum::UPLOAD];
+        }
+
+        return parent::buttonsFor($view);
     }
 
     /**

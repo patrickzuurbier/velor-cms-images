@@ -100,4 +100,9 @@ class ImagesPackageTest extends AbstractIntegrationTestCase
         $this->assertSame('Afbeeldingen', $translator->get('velor-images::resources.images.plural'));
         $this->assertSame('Ongebruikt', $translator->get('velor-images::resources.images.tabs.unused'));
     }
+
+    public function test_it_loads_package_views(): void
+    {
+        $this->assertTrue($this->app['view']->exists('velor-images::images.create'));
+    }
 }

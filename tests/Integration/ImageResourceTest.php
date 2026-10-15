@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Velor\Images\Tests\Integration;
 
+use App\Enums\ButtonTypeEnum;
 use App\Enums\ImageProcessingStatusEnum;
+use App\Enums\ResourceViewEnum;
 use App\Jobs\Images\GenerateImageFormatsJob;
 use App\Models\Image;
 use App\Models\ImageUsage;
@@ -36,7 +38,8 @@ class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
 
         $this->get(route('images.index'))
             ->assertOk()
-            ->assertSee($image->getAttribute('name'));
+            ->assertSee($image->getAttribute('name'))
+            ->assertSee('Upload');
     }
 
     public function test_it_builds_tabs_from_actual_resource_types_with_unused_last(): void
@@ -139,6 +142,22 @@ class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
         $this->assertInstanceOf(ImageUpload::class, $field);
         $this->assertFalse($field->allowsSelectionExtensions());
         $this->assertFalse($field->collectsUsageContext());
+        $this->assertTrue($field->isMultiple());
+        $this->assertSame(
+            [ButtonTypeEnum::UPLOAD],
+            $this->app->make(ImageResource::class)->buttonsFor(ResourceViewEnum::INDEX),
+        );
+    }
+
+    public function test_the_upload_page_uses_the_package_view_with_a_multiple_file_input(): void
+    {
+        $this->actingAsAdmin();
+
+        $this->get(route('images.create'))
+            ->assertOk()
+            ->assertViewIs('velor-images::images.create')
+            ->assertSee('class="velor-image-library-upload"', false)
+            ->assertSee('multiple', false);
     }
 
     public function test_library_upload_rejects_an_existing_image_selection(): void

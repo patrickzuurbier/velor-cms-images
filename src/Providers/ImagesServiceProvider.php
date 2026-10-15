@@ -72,6 +72,7 @@ class ImagesServiceProvider extends ServiceProvider
         CmsMenuItemRegistryInterface $cmsMenuItems,
     ): void {
         $this->loadTranslationsFrom(__DIR__ . '/../../lang', 'velor-images');
+        $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'velor-images');
 
         $resources->register($this->app->make(ImageResource::class));
         $policies->register(Image::class, ImagePolicy::class);
