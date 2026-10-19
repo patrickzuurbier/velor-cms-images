@@ -25,12 +25,12 @@
         <section class="velor-image-upload-progress card d-none" aria-live="polite">
             <div class="card-body">
                 <h4>{{ __('velor-images::resources.images.upload.title') }}</h4>
-                <div class="velor-image-upload-label mb-1"></div>
-                <div class="progress mb-3" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <div id="velor-image-upload-label" class="velor-image-upload-label mb-1"></div>
+                <div class="progress mb-3" role="progressbar" aria-labelledby="velor-image-upload-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
                     <div class="progress-bar velor-image-upload-bar" style="width: 0%"></div>
                 </div>
-                <div class="velor-image-processing-label mb-1"></div>
-                <div class="progress mb-3" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <div id="velor-image-processing-label" class="velor-image-processing-label mb-1"></div>
+                <div class="progress mb-3" role="progressbar" aria-labelledby="velor-image-processing-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
                     <div class="progress-bar bg-success velor-image-processing-bar" style="width: 0%"></div>
                 </div>
                 <div class="velor-image-upload-summary fw-semibold mb-2"></div>

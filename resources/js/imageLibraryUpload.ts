@@ -292,9 +292,9 @@ function createState(file: File, fileList: HTMLElement, container: HTMLElement):
     const status = document.createElement('span');
 
     item.className = 'list-group-item d-flex justify-content-between gap-3';
-    filename.className = 'text-truncate';
+    filename.className = 'velor-image-upload-filename';
     filename.textContent = file.name;
-    status.className = 'text-nowrap';
+    status.className = 'velor-image-upload-file-status';
     item.append(filename, status);
     fileList.append(item);
 

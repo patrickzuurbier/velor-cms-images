@@ -162,6 +162,7 @@ class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
             ->assertSee('data-processing-url="' . route('images.processing-statuses') . '"', false)
             ->assertSee('data-complete-url="' . route('images.index', ['scope' => 'unused']) . '"', false)
             ->assertSee('data-status-processing="Processing"', false)
+            ->assertSee('aria-labelledby="velor-image-processing-label"', false)
             ->assertSee('velor-image-processing-bar', false);
     }
 

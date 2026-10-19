@@ -1,0 +1,70 @@
+.velor-image-upload-progress {
+    bottom: 1.5rem;
+    box-shadow: var(--bs-box-shadow-lg);
+    max-height: min(70vh, 42rem);
+    overflow: hidden;
+    position: fixed;
+    right: 1.5rem;
+    width: min(34rem, calc(100vw - 3rem));
+    z-index: 1080;
+
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+    }
+
+    .progress {
+        flex: 0 0 auto;
+        height: .75rem;
+    }
+}
+
+.velor-image-upload-label,
+.velor-image-processing-label {
+    font-size: .875rem;
+    font-weight: 600;
+}
+
+.velor-image-upload-files {
+    max-height: min(40vh, 22rem);
+    overflow-y: auto;
+
+    .list-group-item {
+        align-items: flex-start;
+        min-width: 0;
+    }
+
+    .velor-image-upload-filename {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .velor-image-upload-file-status {
+        flex: 0 0 auto;
+        max-width: 50%;
+        overflow-wrap: anywhere;
+        text-align: right;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .velor-image-upload-progress {
+        bottom: 1rem;
+        left: 1rem;
+        max-height: calc(100vh - 2rem);
+        right: 1rem;
+        width: auto;
+    }
+
+    .velor-image-upload-files .list-group-item {
+        flex-direction: column;
+    }
+
+    .velor-image-upload-files .velor-image-upload-file-status {
+        max-width: 100%;
+        text-align: left;
+    }
+}
