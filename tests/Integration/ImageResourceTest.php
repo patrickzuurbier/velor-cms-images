@@ -159,7 +159,10 @@ class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
             ->assertSee('class="velor-image-library-upload"', false)
             ->assertSee('multiple', false)
             ->assertSee('Upload progress')
-            ->assertSee('data-status-uploading="Uploading"', false);
+            ->assertSee('data-processing-url="' . route('images.processing-statuses') . '"', false)
+            ->assertSee('data-complete-url="' . route('images.index', ['scope' => 'unused']) . '"', false)
+            ->assertSee('data-status-processing="Processing"', false)
+            ->assertSee('velor-image-processing-bar', false);
     }
 
     public function test_library_upload_rejects_an_existing_image_selection(): void
