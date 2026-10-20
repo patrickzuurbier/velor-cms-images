@@ -6,6 +6,23 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+## [2.0.0-rc.5] - 2026-10-19
+
+### Added
+
+- Added multi-image library uploads with one isolated request per image,
+  limited concurrent uploads, aggregate upload progress, and per-file feedback.
+- Added queued format-processing progress with chunked status polling and a
+  responsive progress interface for large batches.
+
+### Changed
+
+- Limited image picker results to images whose configured formats have been
+  processed successfully.
+- Raised the minimum Velor CMS version to `^1.19` for configurable image upload
+  limits, queued format generation, processing statuses, and the resource
+  upload button.
+
 ## [2.0.0-rc.4] - 2026-10-13
 
 ### Changed
@@ -182,7 +199,8 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 - Removed the unused legacy image category config; image categories are managed
   as database records.
 
-[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.4...HEAD
+[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.5...HEAD
+[2.0.0-rc.5]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.4...2.0.0-rc.5
 [2.0.0-rc.4]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.3...2.0.0-rc.4
 [2.0.0-rc.3]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.2...2.0.0-rc.3
 [2.0.0-rc.2]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.1...2.0.0-rc.2

@@ -4,7 +4,7 @@ Velor CMS Images is the optional image management and selection layer for
 Velor CMS. Velor CMS core owns image records, usages, uploads, storage,
 generated formats, recovery, and regeneration.
 
-The `2.0` release line requires PHP `^8.4.1` and Velor CMS `^1.17`. It browses
+The `2.0` release line requires PHP `^8.4.1` and Velor CMS `^1.19`. It browses
 and manages core images and usages, exposes image selection for `ImageUpload`,
 and groups images by their actual resource usages. It does not define its own
 image models, storage services, migrations, categories, or maintenance commands.
@@ -27,6 +27,17 @@ ImageUpload::make('image')
 
 The `imagePicker()` option is provided by this package and is unavailable when
 the package is not installed.
+
+## Image library uploads
+
+The Images resource Upload action accepts multiple new images. Every image is
+uploaded independently, so validation or transport failure for one file does
+not block the remaining batch. The interface displays separate upload and
+format-processing progress and opens the Unused image overview when every image
+has been processed successfully.
+
+The maximum file size applies per image and follows the core `MAX_IMAGE_SIZE`
+configuration. Only fully processed images are available in the image picker.
 
 ## Development
 
