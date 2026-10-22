@@ -1,10 +1,11 @@
 .velor-image-upload-progress {
-    bottom: 1.5rem;
     box-shadow: var(--bs-box-shadow-lg);
+    left: 50%;
     max-height: min(70vh, 42rem);
     overflow: hidden;
     position: fixed;
-    right: 1.5rem;
+    top: 50%;
+    transform: translate(-50%, -50%);
     width: min(34rem, calc(100vw - 3rem));
     z-index: 1080;
 
@@ -52,11 +53,8 @@
 
 @media (max-width: 575.98px) {
     .velor-image-upload-progress {
-        bottom: 1rem;
-        left: 1rem;
         max-height: calc(100vh - 2rem);
-        right: 1rem;
-        width: auto;
+        width: calc(100vw - 2rem);
     }
 
     .velor-image-upload-files .list-group-item {
