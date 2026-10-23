@@ -6,6 +6,12 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+## [2.0.0-rc.6] - 2026-10-23
+
+### Fixed
+
+- Centered the image upload progress dialog within the viewport.
+
 ## [2.0.0-rc.5] - 2026-10-19
 
 ### Added
@@ -199,7 +205,8 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 - Removed the unused legacy image category config; image categories are managed
   as database records.
 
-[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.5...HEAD
+[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.6...HEAD
+[2.0.0-rc.6]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.5...2.0.0-rc.6
 [2.0.0-rc.5]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.4...2.0.0-rc.5
 [2.0.0-rc.4]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.3...2.0.0-rc.4
 [2.0.0-rc.3]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.2...2.0.0-rc.3
