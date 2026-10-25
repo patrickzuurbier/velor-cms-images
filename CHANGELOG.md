@@ -6,6 +6,14 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+## [2.0.0-rc.8] - 2026-10-25
+
+### Changed
+
+- Kept image upload progress within the standard resource form layout.
+- Raised the minimum Velor CMS version to `^1.19.4` for trailing package-owned
+  resource form content.
+
 ## [2.0.0-rc.7] - 2026-10-25
 
 ### Changed
@@ -219,7 +227,8 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 - Removed the unused legacy image category config; image categories are managed
   as database records.
 
-[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.7...HEAD
+[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.8...HEAD
+[2.0.0-rc.8]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.7...2.0.0-rc.8
 [2.0.0-rc.7]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.6...2.0.0-rc.7
 [2.0.0-rc.6]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.5...2.0.0-rc.6
 [2.0.0-rc.5]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.4...2.0.0-rc.5
