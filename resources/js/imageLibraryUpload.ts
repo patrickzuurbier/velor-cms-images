@@ -19,6 +19,11 @@ type UploadState = {
     statusElement: HTMLElement;
 };
 
+type SelectedFile = {
+    file: File;
+    error: string | null;
+};
+
 const maximumConcurrentUploads = 4;
 
 export function initializeImageLibraryUpload(): void {
@@ -39,57 +44,29 @@ function initializeUploader(container: HTMLElement): void {
     const processingBar = container.querySelector<HTMLElement>('.velor-image-processing-bar');
     const summary = container.querySelector<HTMLElement>('.velor-image-upload-summary');
     const fileList = container.querySelector<HTMLElement>('.velor-image-upload-files');
+    const actions = container.querySelector<HTMLElement>('.velor-image-upload-actions');
 
     if (! form || ! input || ! dropzone || ! feedback || ! progressPanel || ! uploadLabel
-        || ! uploadBar || ! processingLabel || ! processingBar || ! summary || ! fileList) {
+        || ! uploadBar || ! processingLabel || ! processingBar || ! summary || ! fileList || ! actions) {
         return;
     }
 
-    let selectedFiles: File[] = [];
     let active = false;
 
-    input.addEventListener('change', event => {
-        event.stopImmediatePropagation();
-
-        if (active) {
+    const startUpload = (files: File[]): void => {
+        if (active || files.length === 0) {
             return;
         }
 
-        selectedFiles = selectFiles(Array.from(input.files ?? []), dropzone, feedback);
-        resetProgress(progressPanel, uploadLabel, uploadBar, processingLabel, processingBar, summary, fileList);
-    }, {capture: true});
+        resetProgress(progressPanel, uploadLabel, uploadBar, processingLabel, processingBar, summary, fileList, actions);
 
-    dropzone.addEventListener('drop', event => {
-        event.preventDefault();
-        event.stopImmediatePropagation();
+        const states = selectFiles(files, dropzone, feedback)
+            .map(selectedFile => createState(selectedFile, fileList, container));
 
-        if (active) {
-            return;
-        }
-
-        selectedFiles = selectFiles(Array.from(event.dataTransfer?.files ?? []), dropzone, feedback);
-        resetProgress(progressPanel, uploadLabel, uploadBar, processingLabel, processingBar, summary, fileList);
-    }, {capture: true});
-
-    window.addEventListener('beforeunload', event => {
-        if (active) {
-            event.preventDefault();
-        }
-    });
-
-    form.addEventListener('submit', event => {
-        event.preventDefault();
-
-        if (active || selectedFiles.length === 0) {
-            return;
-        }
-
+        progressPanel.classList.remove('d-none');
+        updateUploadProgress(states, container, uploadLabel, uploadBar);
         active = true;
         input.disabled = true;
-        setSubmitDisabled(form, true);
-        progressPanel.classList.remove('d-none');
-
-        const states = selectedFiles.map(file => createState(file, fileList, container));
 
         void (async (): Promise<void> => {
             try {
@@ -102,7 +79,6 @@ function initializeUploader(container: HTMLElement): void {
                     uploadLabel,
                     uploadBar,
                 );
-                showUploadSummary(states, container, summary);
 
                 const processableStates = states.filter(
                     (state): state is UploadState & {imageId: string} => state.imageId !== null,
@@ -118,38 +94,56 @@ function initializeUploader(container: HTMLElement): void {
                     );
                 }
 
-                showProcessingSummary(states, container, summary);
-
-                if (states.every(state => state.status === 'completed')) {
-                    window.setTimeout(() => {
-                        window.location.assign(container.dataset.completeUrl ?? '/cms/images?scope=unused');
-                    }, 750);
-                }
+                showResultSummary(states, container, summary);
             } catch {
                 summary.textContent = container.dataset.processingError ?? '';
                 summary.classList.add('text-danger');
                 summary.classList.remove('text-success');
             } finally {
                 active = false;
-                selectedFiles = [];
                 input.disabled = false;
                 input.value = '';
-                setSubmitDisabled(form, false);
+                actions.classList.remove('d-none');
             }
         })();
+    };
+
+    input.addEventListener('change', event => {
+        event.stopImmediatePropagation();
+
+        startUpload(Array.from(input.files ?? []));
+    }, {capture: true});
+
+    dropzone.addEventListener('drop', event => {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+
+        startUpload(Array.from(event.dataTransfer?.files ?? []));
+    }, {capture: true});
+
+    window.addEventListener('beforeunload', event => {
+        if (active) {
+            event.preventDefault();
+        }
+    });
+
+    form.addEventListener('submit', event => {
+        event.preventDefault();
     });
 }
 
-function selectFiles(files: File[], dropzone: HTMLElement, feedback: HTMLElement): File[] {
+function selectFiles(files: File[], dropzone: HTMLElement, feedback: HTMLElement): SelectedFile[] {
     const maximumSize = Number.parseInt(dropzone.dataset.maximumSize ?? '5', 10) * 1024 * 1024;
-    const selectedFiles = files.filter(file => file.size <= maximumSize);
-    const rejectedCount = files.length - selectedFiles.length;
+    const rejectedCount = files.filter(file => file.size > maximumSize).length;
 
     feedback.textContent = rejectedCount === 0
         ? ''
         : tooLargeMessage(dropzone, rejectedCount);
 
-    return selectedFiles;
+    return files.map(file => ({
+        file,
+        error: file.size > maximumSize ? dropzone.dataset.imageTooLarge ?? '' : null,
+    }));
 }
 
 async function uploadFiles(
@@ -161,11 +155,12 @@ async function uploadFiles(
     uploadLabel: HTMLElement,
     uploadBar: HTMLElement,
 ): Promise<void> {
+    const uploadableStates = states.filter(state => state.status === 'waiting');
     let nextIndex = 0;
 
     const uploadNext = async (): Promise<void> => {
-        while (nextIndex < states.length) {
-            const state = states[nextIndex++];
+        while (nextIndex < uploadableStates.length) {
+            const state = uploadableStates[nextIndex++];
 
             await uploadState(form, inputName, attribute, state, states, container, uploadLabel, uploadBar);
         }
@@ -173,7 +168,7 @@ async function uploadFiles(
 
     await Promise.all(
         Array.from(
-            {length: Math.min(maximumConcurrentUploads, states.length)},
+            {length: Math.min(maximumConcurrentUploads, uploadableStates.length)},
             () => uploadNext(),
         ),
     );
@@ -286,24 +281,24 @@ async function trackProcessing(
     );
 }
 
-function createState(file: File, fileList: HTMLElement, container: HTMLElement): UploadState {
+function createState(selectedFile: SelectedFile, fileList: HTMLElement, container: HTMLElement): UploadState {
     const item = document.createElement('li');
     const filename = document.createElement('span');
     const status = document.createElement('span');
 
     item.className = 'list-group-item d-flex justify-content-between gap-3';
     filename.className = 'velor-image-upload-filename';
-    filename.textContent = file.name;
+    filename.textContent = selectedFile.file.name;
     status.className = 'velor-image-upload-file-status';
     item.append(filename, status);
     fileList.append(item);
 
     const state: UploadState = {
-        file,
+        file: selectedFile.file,
         imageId: null,
-        loaded: 0,
-        status: 'waiting',
-        error: null,
+        loaded: selectedFile.error === null ? 0 : selectedFile.file.size,
+        status: selectedFile.error === null ? 'waiting' : 'failed',
+        error: selectedFile.error,
         statusElement: status,
     };
 
@@ -355,22 +350,22 @@ function updateProcessingProgress(
     setProgress(processingBar, percentage);
 }
 
-function showUploadSummary(states: UploadState[], container: HTMLElement, summary: HTMLElement): void {
-    const failed = states.some(state => state.status === 'failed' && state.imageId === null);
+function showResultSummary(states: UploadState[], container: HTMLElement, summary: HTMLElement): void {
+    const completed = states.filter(state => state.status === 'completed').length;
+    const failed = states.filter(state => state.status === 'failed').length;
+    let template = container.dataset.resultComplete ?? '';
 
-    summary.textContent = failed
-        ? container.dataset.failedLabel ?? ''
-        : container.dataset.completeLabel ?? '';
-    setSummaryState(summary, failed);
-}
+    if (completed === 0) {
+        template = container.dataset.resultFailed ?? '';
+    } else if (failed > 0) {
+        template = container.dataset.resultPartial ?? '';
+    }
 
-function showProcessingSummary(states: UploadState[], container: HTMLElement, summary: HTMLElement): void {
-    const failed = states.some(state => state.status === 'failed');
-
-    summary.textContent = failed
-        ? container.dataset.processingFailedLabel ?? ''
-        : container.dataset.processingCompleteLabel ?? '';
-    setSummaryState(summary, failed);
+    summary.textContent = replacePlaceholders(template, {
+        completed: String(completed),
+        failed: String(failed),
+    });
+    setSummaryState(summary, failed > 0);
 }
 
 function setSummaryState(summary: HTMLElement, failed: boolean): void {
@@ -393,6 +388,7 @@ function resetProgress(
     processingBar: HTMLElement,
     summary: HTMLElement,
     fileList: HTMLElement,
+    actions: HTMLElement,
 ): void {
     progressPanel.classList.add('d-none');
     uploadLabel.textContent = '';
@@ -402,12 +398,7 @@ function resetProgress(
     summary.textContent = '';
     summary.classList.remove('text-danger', 'text-success');
     fileList.replaceChildren();
-}
-
-function setSubmitDisabled(form: HTMLFormElement, disabled: boolean): void {
-    form.querySelectorAll<HTMLButtonElement>('button[type="submit"]').forEach(button => {
-        button.disabled = disabled;
-    });
+    actions.classList.add('d-none');
 }
 
 function tooLargeMessage(dropzone: HTMLElement, rejectedCount: number): string {

@@ -4,15 +4,13 @@
     <div
         class="velor-image-library-upload"
         data-processing-url="{{ route('images.processing-statuses') }}"
-        data-complete-url="{{ route('images.index', ['scope' => 'unused']) }}"
         data-progress-label="{{ __('velor-images::resources.images.upload.progress') }}"
-        data-complete-label="{{ __('velor-images::resources.images.upload.complete') }}"
-        data-failed-label="{{ __('velor-images::resources.images.upload.failed') }}"
         data-generic-error="{{ __('velor-images::resources.images.upload.generic_error') }}"
         data-processing-progress-label="{{ __('velor-images::resources.images.upload.processing_progress') }}"
-        data-processing-complete-label="{{ __('velor-images::resources.images.upload.processing_complete') }}"
-        data-processing-failed-label="{{ __('velor-images::resources.images.upload.processing_failed') }}"
         data-processing-error="{{ __('velor-images::resources.images.upload.processing_error') }}"
+        data-result-complete="{{ __('velor-images::resources.images.upload.result_complete') }}"
+        data-result-partial="{{ __('velor-images::resources.images.upload.result_partial') }}"
+        data-result-failed="{{ __('velor-images::resources.images.upload.result_failed') }}"
         data-status-waiting="{{ __('velor-images::resources.images.upload.status_waiting') }}"
         data-status-uploading="{{ __('velor-images::resources.images.upload.status_uploading') }}"
         data-status-pending="{{ __('velor-images::resources.images.upload.status_pending') }}"
@@ -35,6 +33,11 @@
                 </div>
                 <div class="velor-image-upload-summary fw-semibold mb-2"></div>
                 <ul class="velor-image-upload-files list-group"></ul>
+                <div class="velor-image-upload-actions d-none mt-3">
+                    <a class="btn btn-primary" href="{{ route('images.index', ['scope' => 'unused']) }}">
+                        {{ __('velor-images::resources.images.upload.view_images') }}
+                    </a>
+                </div>
             </div>
         </section>
     </div>

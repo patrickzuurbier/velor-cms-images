@@ -32,9 +32,10 @@ the package is not installed.
 
 The Images resource Upload action accepts multiple new images. Every image is
 uploaded independently, so validation or transport failure for one file does
-not block the remaining batch. The interface displays separate upload and
-format-processing progress and opens the Unused image overview when every image
-has been processed successfully.
+not block the remaining batch. The package starts uploads immediately after
+file selection, limits concurrent requests, and tracks core format processing
+separately. Partial failures retain successfully processed images and expose
+the completed results through the Unused image scope.
 
 The maximum file size applies per image and follows the core `MAX_IMAGE_SIZE`
 configuration. Only fully processed images are available in the image picker.

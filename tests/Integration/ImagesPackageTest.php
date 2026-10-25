@@ -102,6 +102,10 @@ class ImagesPackageTest extends AbstractIntegrationTestCase
             ':completed of :total images processed',
             $translator->get('velor-images::resources.images.upload.processing_progress'),
         );
+        $this->assertSame(
+            'Added: :completed. Failed: :failed.',
+            $translator->get('velor-images::resources.images.upload.result_partial'),
+        );
 
         $translator->setLocale('nl');
 

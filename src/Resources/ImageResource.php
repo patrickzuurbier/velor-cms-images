@@ -111,6 +111,10 @@ class ImageResource extends AbstractResource
             return [ButtonTypeEnum::UPLOAD];
         }
 
+        if ($view === ResourceViewEnum::FORM && $this->request->routeIs('images.create')) {
+            return [];
+        }
+
         return parent::buttonsFor($view);
     }
 
