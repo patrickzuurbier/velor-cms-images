@@ -18,27 +18,27 @@
         data-status-completed="{{ __('velor-images::resources.images.upload.status_completed') }}"
         data-status-failed="{{ __('velor-images::resources.images.upload.status_failed') }}"
     >
-        <x-cms.form.form :resource="$resource"/>
-
-        <section class="velor-image-upload-progress card d-none" aria-live="polite">
-            <div class="card-body">
-                <h4>{{ __('velor-images::resources.images.upload.title') }}</h4>
-                <div id="velor-image-upload-label" class="velor-image-upload-label mb-1"></div>
-                <div class="progress mb-3" role="progressbar" aria-labelledby="velor-image-upload-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-                    <div class="progress-bar velor-image-upload-bar" style="width: 0%"></div>
+        <x-cms.form.form :resource="$resource">
+            <section class="velor-image-upload-progress card d-none" aria-live="polite">
+                <div class="card-body">
+                    <h4>{{ __('velor-images::resources.images.upload.title') }}</h4>
+                    <div id="velor-image-upload-label" class="velor-image-upload-label mb-1"></div>
+                    <div class="progress mb-3" role="progressbar" aria-labelledby="velor-image-upload-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                        <div class="progress-bar velor-image-upload-bar" style="width: 0%"></div>
+                    </div>
+                    <div id="velor-image-processing-label" class="velor-image-processing-label mb-1"></div>
+                    <div class="progress mb-3" role="progressbar" aria-labelledby="velor-image-processing-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                        <div class="progress-bar bg-success velor-image-processing-bar" style="width: 0%"></div>
+                    </div>
+                    <div class="velor-image-upload-summary fw-semibold mb-2"></div>
+                    <ul class="velor-image-upload-files list-group"></ul>
+                    <div class="velor-image-upload-actions d-none mt-3">
+                        <a class="btn btn-primary" href="{{ route('images.index', ['scope' => 'unused']) }}">
+                            {{ __('velor-images::resources.images.upload.view_images') }}
+                        </a>
+                    </div>
                 </div>
-                <div id="velor-image-processing-label" class="velor-image-processing-label mb-1"></div>
-                <div class="progress mb-3" role="progressbar" aria-labelledby="velor-image-processing-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-                    <div class="progress-bar bg-success velor-image-processing-bar" style="width: 0%"></div>
-                </div>
-                <div class="velor-image-upload-summary fw-semibold mb-2"></div>
-                <ul class="velor-image-upload-files list-group"></ul>
-                <div class="velor-image-upload-actions d-none mt-3">
-                    <a class="btn btn-primary" href="{{ route('images.index', ['scope' => 'unused']) }}">
-                        {{ __('velor-images::resources.images.upload.view_images') }}
-                    </a>
-                </div>
-            </div>
-        </section>
+            </section>
+        </x-cms.form.form>
     </div>
 @endsection

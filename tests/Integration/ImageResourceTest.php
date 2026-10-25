@@ -18,6 +18,9 @@ use App\Resources\Fields\ImageUpload;
 use App\Resources\Tabs\ResourceTab;
 use App\Services\Images\Contracts\ImageUrlGeneratorInterface;
 use Closure;
+use DOMDocument;
+use DOMElement;
+use DOMXPath;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Http\Request;
@@ -153,7 +156,7 @@ class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
     {
         $this->actingAsAdmin();
 
-        $this->get(route('images.create'))
+        $response = $this->get(route('images.create'))
             ->assertOk()
             ->assertViewIs('velor-images::images.create')
             ->assertSee('class="velor-image-library-upload"', false)
@@ -169,6 +172,19 @@ class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
             ->assertSee('View images')
             ->assertDontSee('Save')
             ->assertDontSee('Cancel');
+
+        $document = new DOMDocument();
+        $document->loadHTML($response->getContent(), LIBXML_NOERROR | LIBXML_NOWARNING);
+        $xpath = new DOMXPath($document);
+        $progress = $xpath->query(
+            '//section[contains(concat(" ", normalize-space(@class), " "), " velor-image-upload-progress ")]',
+        )?->item(0);
+
+        $this->assertInstanceOf(DOMElement::class, $progress);
+        $this->assertSame(1, $xpath->query(
+            'ancestor::div[contains(concat(" ", normalize-space(@class), " "), " form ")]',
+            $progress,
+        )?->length);
     }
 
     public function test_library_upload_rejects_an_existing_image_selection(): void
