@@ -6,6 +6,20 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+## [2.0.0-rc.7] - 2026-10-25
+
+### Changed
+
+- Started image library uploads immediately after file selection and replaced
+  the resource form actions with an inline per-file progress and result flow.
+- Kept successfully processed images accessible after partial batch failures
+  through an explicit link to the Unused image overview.
+
+### Fixed
+
+- Prevented large upload result lists from overflowing an inaccessible fixed
+  progress dialog.
+
 ## [2.0.0-rc.6] - 2026-10-23
 
 ### Fixed
@@ -205,7 +219,8 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 - Removed the unused legacy image category config; image categories are managed
   as database records.
 
-[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.6...HEAD
+[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.7...HEAD
+[2.0.0-rc.7]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.6...2.0.0-rc.7
 [2.0.0-rc.6]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.5...2.0.0-rc.6
 [2.0.0-rc.5]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.4...2.0.0-rc.5
 [2.0.0-rc.4]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.3...2.0.0-rc.4
