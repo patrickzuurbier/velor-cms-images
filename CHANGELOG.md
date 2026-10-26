@@ -6,6 +6,17 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-10-26
+
+### Added
+
+- Added a back action to the image library upload screen.
+
+### Changed
+
+- Selected existing images immediately when their picker card is clicked and
+  removed the redundant picker footer actions.
+
 ## [2.0.0-rc.8] - 2026-10-25
 
 ### Changed
@@ -227,7 +238,8 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 - Removed the unused legacy image category config; image categories are managed
   as database records.
 
-[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.8...HEAD
+[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0...HEAD
+[2.0.0]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.8...2.0.0
 [2.0.0-rc.8]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.7...2.0.0-rc.8
 [2.0.0-rc.7]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.6...2.0.0-rc.7
 [2.0.0-rc.6]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.5...2.0.0-rc.6
