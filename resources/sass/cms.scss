@@ -28,8 +28,7 @@
     text-align: left;
 
     &:hover,
-    &:focus-visible,
-    &.is-selected {
+    &:focus-visible {
         border-color: var(--bs-primary);
         outline: none;
     }
@@ -54,16 +53,5 @@
 
     small {
         color: var(--bs-secondary-color);
-    }
-}
-
-@media (max-width: 767.98px) {
-    .velor-image-picker .modal-footer {
-        align-items: stretch !important;
-        flex-direction: column;
-
-        > * {
-            width: 100%;
-        }
     }
 }

@@ -47,13 +47,9 @@ class ImagePickerDialog {
 
     private readonly empty: HTMLElement;
 
-    private readonly selectButton: HTMLButtonElement;
-
     private readonly previouslyFocused: HTMLElement | null;
 
     private images: ImagePickerImage[] = [];
-
-    private selectedImage: ImagePickerImage | null = null;
 
     private resolveSelection: ((selection: ImagePickerSelection | null) => void) | null = null;
 
@@ -67,7 +63,6 @@ class ImagePickerDialog {
         this.modal = this.createModal();
         this.grid = this.requiredElement('.velor-image-picker-grid');
         this.empty = this.requiredElement('.velor-image-picker-empty');
-        this.selectButton = this.requiredElement<HTMLButtonElement>('.velor-image-picker-select');
     }
 
     public choose(images: ImagePickerImage[]): Promise<ImagePickerSelection | null> {
@@ -101,10 +96,6 @@ class ImagePickerDialog {
             '<div class="velor-image-picker-grid"></div>',
             '<p class="velor-image-picker-empty text-body-secondary mb-0 d-none"></p>',
             '</div>',
-            '<div class="modal-footer">',
-            '<button type="button" class="btn btn-secondary velor-image-picker-close"></button>',
-            '<button type="button" class="btn btn-primary velor-image-picker-select" disabled></button>',
-            '</div>',
             '</div>',
             '</div>',
         ].join('');
@@ -112,25 +103,18 @@ class ImagePickerDialog {
         const title = this.requiredElementFrom(modal, '.modal-title');
         const search = this.requiredElementFrom<HTMLInputElement>(modal, '.velor-image-picker-search');
         const empty = this.requiredElementFrom(modal, '.velor-image-picker-empty');
-        const select = this.requiredElementFrom<HTMLButtonElement>(modal, '.velor-image-picker-select');
 
         title.textContent = this.labels.title;
         search.placeholder = this.labels.search;
         search.setAttribute('aria-label', this.labels.search);
         empty.textContent = this.labels.empty;
-        select.textContent = this.labels.select;
 
         modal.querySelectorAll<HTMLButtonElement>('.velor-image-picker-close').forEach(button => {
             button.setAttribute('aria-label', this.labels.close);
 
-            if (! button.classList.contains('btn-close')) {
-                button.textContent = this.labels.close;
-            }
-
             button.addEventListener('click', () => this.close(null));
         });
         search.addEventListener('input', () => this.filterImages(search.value));
-        select.addEventListener('click', () => this.confirm());
         modal.addEventListener('click', event => {
             if (event.target === modal) {
                 this.close(null);
@@ -168,9 +152,11 @@ class ImagePickerDialog {
 
         button.type = 'button';
         button.className = 'velor-image-picker-item';
-        button.classList.toggle('is-selected', this.selectedImage?.id === image.id);
         button.title = image.name;
-        button.addEventListener('click', () => this.selectImage(image));
+        button.addEventListener('click', () => this.complete({
+            image,
+            url: image.preview_url,
+        }));
         preview.src = image.preview_url;
         preview.alt = '';
         name.textContent = image.name;
@@ -178,23 +164,6 @@ class ImagePickerDialog {
         button.append(preview, name, filename);
 
         return button;
-    }
-
-    private selectImage(image: ImagePickerImage): void {
-        this.selectedImage = image;
-        this.filterImages(this.requiredElement<HTMLInputElement>('.velor-image-picker-search').value);
-        this.selectButton.disabled = false;
-    }
-
-    private confirm(): void {
-        if (this.selectedImage === null) {
-            return;
-        }
-
-        this.complete({
-            image: this.selectedImage,
-            url: this.selectedImage.preview_url,
-        });
     }
 
     private complete(selection: ImagePickerSelection): void {

@@ -29,7 +29,6 @@ class ImagePickerController extends Controller
                 'empty'  => $this->translator->get('velor-images::resources.images.picker.empty'),
                 'open'   => $this->translator->get('velor-images::resources.images.picker.open'),
                 'search' => $this->translator->get('velor-images::resources.images.picker.search'),
-                'select' => $this->translator->get('velor-images::resources.images.picker.select'),
                 'title'  => $this->translator->get('velor-images::resources.images.picker.title'),
             ],
         ]);

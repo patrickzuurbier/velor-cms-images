@@ -10,7 +10,6 @@ export type ImagePickerLabels = {
     empty: string;
     open: string;
     search: string;
-    select: string;
     title: string;
 };
 

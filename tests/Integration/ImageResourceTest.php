@@ -167,6 +167,8 @@ class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
             ->assertSee('data-status-processing="Processing"', false)
             ->assertSee('aria-labelledby="velor-image-processing-label"', false)
             ->assertSee('velor-image-processing-bar', false)
+            ->assertSee('href="' . route('images.index') . '"', false)
+            ->assertSee('Back')
             ->assertSee('class="velor-image-upload-actions d-none mt-3"', false)
             ->assertSee('href="' . route('images.index', ['scope' => 'unused']) . '"', false)
             ->assertSee('View images')

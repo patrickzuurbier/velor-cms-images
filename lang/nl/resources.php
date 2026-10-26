@@ -20,10 +20,10 @@ return [
             'empty'  => 'Geen afbeeldingen gevonden.',
             'open'   => 'Bestaande afbeelding selecteren',
             'search' => 'Afbeeldingen zoeken',
-            'select' => 'Afbeelding selecteren',
             'title'  => 'Afbeeldingenbibliotheek',
         ],
         'upload' => [
+            'back'                => 'Terug',
             'title'               => 'Afbeeldingen uploaden',
             'progress'            => ':completed van :total afbeeldingen geüpload',
             'generic_error'       => 'De afbeelding kon niet worden geüpload.',

@@ -20,10 +20,10 @@ return [
             'empty'  => 'No images found.',
             'open'   => 'Select existing image',
             'search' => 'Search images',
-            'select' => 'Select image',
             'title'  => 'Image library',
         ],
         'upload' => [
+            'back'                => 'Back',
             'title'               => 'Upload images',
             'progress'            => ':completed of :total images uploaded',
             'generic_error'       => 'The image could not be uploaded.',

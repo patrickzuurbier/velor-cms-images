@@ -19,6 +19,10 @@
         data-status-failed="{{ __('velor-images::resources.images.upload.status_failed') }}"
     >
         <x-cms.form.form :resource="$resource">
+            <a class="btn btn-secondary mb-3" href="{{ route('images.index') }}">
+                {{ __('velor-images::resources.images.upload.back') }}
+            </a>
+
             <section class="velor-image-upload-progress card d-none" aria-live="polite">
                 <div class="card-body">
                     <h4>{{ __('velor-images::resources.images.upload.title') }}</h4>
