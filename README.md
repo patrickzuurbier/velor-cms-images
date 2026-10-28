@@ -40,11 +40,7 @@ the completed results through the Unused image scope.
 The maximum file size applies per image and follows the core `MAX_IMAGE_SIZE`
 configuration. Only fully processed images are available in the image picker.
 
-## Development
-
-Keep this repository outside the Velor CMS core repository. For local path
-development, configure the host application to use this repository and update
-the package through Composer.
+## Asset Integration
 
 The Laravel service provider is auto-discoverable.
 
