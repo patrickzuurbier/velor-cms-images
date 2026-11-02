@@ -6,6 +6,11 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+### Changed
+
+- Replaced environment-specific package development guidance with
+  environment-independent asset integration documentation.
+
 ## [2.0.0] - 2026-10-26
 
 ### Added
