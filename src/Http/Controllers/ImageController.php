@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Velor\Images\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Image;
 use App\Services\Images\Contracts\ImageUploadServiceInterface;
 use App\Services\Resources\Contracts\ResourceIndexQueryInterface;
+use App\Services\Resources\Http\Controllers\AbstractResourceController;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -18,15 +18,16 @@ use Velor\Images\Http\Requests\ImageRequest;
 use Velor\Images\Repositories\Contracts\ImageManagementRepositoryInterface;
 use Velor\Images\Resources\ImageResource;
 
-class ImageController extends Controller
+class ImageController extends AbstractResourceController
 {
+    protected static string $resource = ImageResource::class;
+
     public function __construct(
         protected ResourceIndexQueryInterface $resourceIndexQuery,
         protected ImageUploadServiceInterface $imageUploadService,
         protected ImageManagementRepositoryInterface $imageManagementRepository,
         protected ImageResource $imageResource,
     ) {
-        $this->authorizeResource(Image::class);
     }
 
     public function index(Request $request): View

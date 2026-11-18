@@ -6,6 +6,13 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+### Changed
+
+- Adopted Velor CMS' central resource authorization for the Image controller
+  while retaining explicit policy checks for package-specific image actions.
+- Raised the minimum Velor CMS version to `^1.24` for central resource
+  authorization.
+
 ## [2.0.1] - 2026-11-02
 
 ### Changed
