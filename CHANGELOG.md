@@ -6,6 +6,8 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-11-18
+
 ### Changed
 
 - Adopted Velor CMS' central resource authorization for the Image controller
@@ -252,7 +254,8 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 - Removed the unused legacy image category config; image categories are managed
   as database records.
 
-[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.1...HEAD
+[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.1.0...HEAD
+[2.1.0]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.1...2.1.0
 [2.0.1]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0...2.0.1
 [2.0.0]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.8...2.0.0
 [2.0.0-rc.8]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.7...2.0.0-rc.8
