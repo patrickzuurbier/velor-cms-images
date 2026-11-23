@@ -32,7 +32,7 @@ class ImageController extends AbstractResourceController
 
     public function index(Request $request): View
     {
-        return view('cms.layouts.index', [
+        return view('velor.layouts.index', [
             'pagination' => $this->resourceIndexQuery->paginate(
                 resource: $this->imageResource,
                 search: $request->string('search')->toString(),
@@ -68,14 +68,14 @@ class ImageController extends AbstractResourceController
 
     public function show(Image $image): View
     {
-        return view('cms.layouts.show', [
+        return view('velor.layouts.show', [
             'resource' => $this->imageResource,
         ]);
     }
 
     public function edit(Image $image): View
     {
-        return view('cms.layouts.form', [
+        return view('velor.layouts.form', [
             'resource' => $this->imageResource,
         ]);
     }

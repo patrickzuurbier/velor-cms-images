@@ -5,7 +5,7 @@ import type {
     ImagePickerSelection,
 } from './types';
 
-const endpoint = '/cms/images/picker';
+const endpoint = '/velor/images/picker';
 let pickerDataPromise: Promise<ImagePickerResponse> | null = null;
 
 export function preloadImagePicker(): Promise<ImagePickerResponse> {

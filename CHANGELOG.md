@@ -6,6 +6,13 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+### Changed
+
+- Migrated menu registration, authenticated routes, shared layouts, Blade
+  components, frontend entrypoints, and package tests to the canonical Velor
+  APIs.
+- Raised the minimum Velor version to `^1.26`.
+
 ## [2.1.0] - 2026-11-18
 
 ### Changed

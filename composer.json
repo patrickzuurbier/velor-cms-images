@@ -1,12 +1,12 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
     "name": "patrickzuurbier/velor-cms-images",
-    "description": "Image management and selection plugin for Velor CMS.",
+    "description": "Image management and selection package for Velor.",
     "type": "library",
     "license": "MIT",
     "require": {
         "php": "^8.4.1",
-        "velor/cms": "^1.24"
+        "velor/cms": "^1.26"
     },
     "autoload": {
         "psr-4": {
@@ -24,8 +24,8 @@
                 "Velor\\Images\\Providers\\ImagesServiceProvider"
             ],
             "vite": [
-                "resources/sass/cms.scss",
-                "resources/js/cms.ts"
+                "resources/sass/velor.scss",
+                "resources/js/velor.ts"
             ]
         }
     },

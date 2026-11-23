@@ -59,11 +59,11 @@ class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
             static fn (ResourceTab $tab): string => $tab->getLabel(),
             $tabs,
         ));
-        $this->assertTrue($tabs[0]->isActive(Request::create('/cms/images')));
-        $this->assertTrue($tabs[1]->isActive(Request::create('/cms/images', 'GET', [
+        $this->assertTrue($tabs[0]->isActive(Request::create('/velor/images')));
+        $this->assertTrue($tabs[1]->isActive(Request::create('/velor/images', 'GET', [
             'scope' => 'resource:pages',
         ])));
-        $this->assertTrue($tabs[2]->isActive(Request::create('/cms/images', 'GET', [
+        $this->assertTrue($tabs[2]->isActive(Request::create('/velor/images', 'GET', [
             'scope' => 'unused',
         ])));
     }
@@ -113,7 +113,7 @@ class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
             static fn (ResourceTab $tab): string => $tab->getLabel(),
             $tabs,
         ));
-        $this->assertTrue($tabs[1]->isActive(Request::create('/cms/images/' . $image->getKey())));
+        $this->assertTrue($tabs[1]->isActive(Request::create('/velor/images/' . $image->getKey())));
 
         $this->setRequest(['format' => 'half'], $image);
 
@@ -124,7 +124,7 @@ class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
 
         $this->assertStringEndsWith('/half.webp', $preview->url);
         $this->assertSame(960, $properties['width']);
-        $this->assertTrue($tabs[2]->isActive(Request::create('/cms/images/' . $image->getKey(), 'GET', [
+        $this->assertTrue($tabs[2]->isActive(Request::create('/velor/images/' . $image->getKey(), 'GET', [
             'format' => 'half',
         ])));
         $tabUrl = $tabs[2]->getUrl();
@@ -349,10 +349,10 @@ class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
      */
     protected function setRequest(array $query, ?Image $image = null): void
     {
-        $request = Request::create('/cms/images', 'GET', $query);
+        $request = Request::create('/velor/images', 'GET', $query);
 
         if ($image instanceof Image) {
-            $route = new Route(['GET'], '/cms/images/{image}', []);
+            $route = new Route(['GET'], '/velor/images/{image}', []);
             $route->bind($request);
             $route->setParameter('image', $image);
             $request->setRouteResolver(static fn (): Route => $route);

@@ -7,9 +7,9 @@ namespace Velor\Images\Tests\Integration;
 use App\Models\Image;
 use App\Resources\Fields\ImageUpload;
 use App\Services\Authorization\Contracts\PolicyRegistryInterface;
-use App\Services\CmsMenu\Contracts\CmsMenuItemRegistryInterface;
-use App\Services\CmsMenu\Data\CmsMenuItemData;
 use App\Services\Resources\Contracts\ResourceRegistryInterface;
+use App\Services\VelorMenu\Contracts\VelorMenuItemRegistryInterface;
+use App\Services\VelorMenu\Data\VelorMenuItemData;
 use Illuminate\Contracts\Translation\Translator;
 use Tests\Integration\AbstractIntegrationTestCase;
 use Velor\Images\Policies\ImagePolicy;
@@ -40,25 +40,25 @@ class ImagesPackageTest extends AbstractIntegrationTestCase
         $this->assertSame(ImagePolicy::class, $registry->privilegePolicies()[Image::class]);
     }
 
-    public function test_it_registers_the_images_cms_menu_item(): void
+    public function test_it_registers_the_images_velor_menu_item(): void
     {
-        $registry = $this->app->make(CmsMenuItemRegistryInterface::class);
+        $registry = $this->app->make(VelorMenuItemRegistryInterface::class);
         $item = collect($registry->items())->firstWhere('routeName', 'images.index');
 
-        $this->assertInstanceOf(CmsMenuItemData::class, $item);
+        $this->assertInstanceOf(VelorMenuItemData::class, $item);
         $this->assertSame(Image::class, $item->modelClass);
         $this->assertSame('velor-images::resources.images.plural', $item->label);
         $this->assertSame('bi-images', $item->icon);
     }
 
-    public function test_it_loads_image_cms_routes(): void
+    public function test_it_loads_image_velor_routes(): void
     {
         $this->app['router']->getRoutes()->refreshNameLookups();
 
         $route = $this->app['router']->getRoutes()->getByName('images.index');
 
         $this->assertNotNull($route);
-        $this->assertSame('cms/images', $route->uri());
+        $this->assertSame('velor/images', $route->uri());
         $this->assertContains('web', $route->middleware());
         $this->assertContains('auth', $route->middleware());
     }
@@ -70,7 +70,7 @@ class ImagesPackageTest extends AbstractIntegrationTestCase
         $route = $this->app['router']->getRoutes()->getByName('images.picker');
 
         $this->assertNotNull($route);
-        $this->assertSame('cms/images/picker', $route->uri());
+        $this->assertSame('velor/images/picker', $route->uri());
         $this->assertContains('auth', $route->middleware());
     }
 
@@ -81,7 +81,7 @@ class ImagesPackageTest extends AbstractIntegrationTestCase
         $route = $this->app['router']->getRoutes()->getByName('images.processing-statuses');
 
         $this->assertNotNull($route);
-        $this->assertSame('cms/images/processing-statuses', $route->uri());
+        $this->assertSame('velor/images/processing-statuses', $route->uri());
         $this->assertSame(['POST'], $route->methods());
         $this->assertContains('auth', $route->middleware());
     }

@@ -18,7 +18,7 @@
         data-status-completed="{{ __('velor-images::resources.images.upload.status_completed') }}"
         data-status-failed="{{ __('velor-images::resources.images.upload.status_failed') }}"
     >
-        <x-cms.form.form :resource="$resource">
+        <x-velor.form.form :resource="$resource">
             <a class="btn btn-secondary mb-3" href="{{ route('images.index') }}">
                 {{ __('velor-images::resources.images.upload.back') }}
             </a>
@@ -43,6 +43,6 @@
                     </div>
                 </div>
             </section>
-        </x-cms.form.form>
+        </x-velor.form.form>
     </div>
 @endsection

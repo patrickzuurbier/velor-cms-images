@@ -1,15 +1,15 @@
 # Velor CMS Images
 
 Velor CMS Images is the optional image management and selection layer for
-Velor CMS. Velor CMS core owns image records, usages, uploads, storage,
+Velor. Velor owns image records, usages, uploads, storage,
 generated formats, recovery, and regeneration.
 
-The `2.0` release line requires PHP `^8.4.1` and Velor CMS `^1.24`. It browses
+The `2.0` release line requires PHP `^8.4.1` and Velor `^1.26`. It browses
 and manages core images and usages, exposes image selection for `ImageUpload`,
 and groups images by their actual resource usages. It does not define its own
 image models, storage services, migrations, categories, or maintenance commands.
 
-Image resource routes use the registered `ImagePolicy` through Velor CMS'
+Image resource routes use the registered `ImagePolicy` through Velor's
 central resource authorization. The picker and processing-status endpoints
 explicitly require image viewing privileges, while bulk deletion authorizes
 each image before removal.
@@ -49,8 +49,8 @@ configuration. Only fully processed images are available in the image picker.
 
 The Laravel service provider is auto-discoverable.
 
-The package declares its CMS TypeScript and Sass entrypoints through Composer.
-Velor CMS discovers, builds, and loads these assets automatically; installation
+The package declares its Velor TypeScript and Sass entrypoints through Composer.
+Velor discovers, builds, and loads these assets automatically; installation
 does not require changes to core Blade templates or asset entrypoints.
 
 ## License
