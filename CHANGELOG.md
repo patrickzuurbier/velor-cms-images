@@ -6,6 +6,8 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+## [2.2.0] - 2026-11-24
+
 ### Changed
 
 - Migrated menu registration, authenticated routes, shared layouts, Blade
@@ -261,7 +263,8 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 - Removed the unused legacy image category config; image categories are managed
   as database records.
 
-[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.1.0...HEAD
+[Unreleased]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.2.0...HEAD
+[2.2.0]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.1.0...2.2.0
 [2.1.0]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.1...2.1.0
 [2.0.1]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0...2.0.1
 [2.0.0]: https://github.com/patrickzuurbier/velor-cms-images/compare/2.0.0-rc.8...2.0.0
