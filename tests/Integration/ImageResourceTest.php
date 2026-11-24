@@ -340,7 +340,7 @@ class ImageResourceTest extends AbstractDatabaseIntegrationTestCase
         $content = $response->getContent();
 
         $this->assertIsString($content);
-        $this->assertSame(1, substr_count($content, 'class="cms-image-preview"'));
+        $this->assertSame(1, substr_count($content, 'class="velor-image-preview"'));
         $this->assertStringNotContainsString('image-format-card', $content);
     }
 
