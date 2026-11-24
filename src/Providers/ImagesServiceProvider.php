@@ -77,8 +77,7 @@ class ImagesServiceProvider extends ServiceProvider
         $resources->register($this->app->make(ImageResource::class));
         $policies->register(Image::class, ImagePolicy::class);
 
-        $velorMenuItems->registerBefore(
-            'users.index',
+        $velorMenuItems->register(
             new VelorMenuItemData(
                 Image::class,
                 'images.index',

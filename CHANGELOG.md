@@ -6,6 +6,14 @@ This package follows semantic versioning: `MAJOR.MINOR.PATCH`.
 
 ## [Unreleased]
 
+### Changed
+
+- Expanded the developer documentation with recognizable Velor branding,
+  installation, ownership boundaries, registration, routes, resource scopes,
+  formats, extension contracts, authorization, assets, and removal behaviour.
+- Changed Images menu registration to append by default so `velor-menu.php`
+  exclusively determines its fixed grouping and position.
+
 ## [2.2.0] - 2026-11-24
 
 ### Changed
